@@ -222,6 +222,15 @@ uint8 Timers_Init(Timers_CFG_S* cfg_s);
 uint8 Timers_SetCounter(uint8 ch_no,uint16 count);
 
 /**
+ * Function : Timers_Set
+ * Description: Function to set the Timer Register To a value
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @param value the value to set   
+ * @return the Status of the Function [OK Or NOT_OK]
+ */
+uint8 Timers_Set(uint8 ch_no,uint16 value);
+
+/**
  * Function : Timers_Start
  * Description: start the counter/Timer
  * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}

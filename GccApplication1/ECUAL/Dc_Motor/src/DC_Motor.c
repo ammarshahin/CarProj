@@ -19,8 +19,9 @@
 /************************************************************************/
 /*				          Data Types and Defines                        */
 /************************************************************************/
-#define MOTOR_FREQUENCY_IN_HZ 20
-#define DEFAULT_SPEED    50
+#define MOTOR_FREQUENCY_IN_HZ   20
+#define DEFAULT_SPEED			50
+#define FULL_SPEED				100
 
 /**
  * Function : DC_Motor_Init
@@ -30,8 +31,6 @@
  */
 void DC_Motor_Init(uint8 Channel)
 {
-	//Timers_timer1_Init(T1_PWM_PhaseCorrect_ICR1_MODE,T1_OC1A_CLEAR,T1_PRESCALER_1024,0,0,0,0,T1_POLLING);
-	//Timers_Init(&timer1_cfg_s);
 	PWM_Init(TIMER1);
 	switch(Channel)
 	{
@@ -66,7 +65,7 @@ void DC_Motor_Init(uint8 Channel)
  */
 uint8 DC_Motor_Set_Speed(uint8 Speed)
 {
-	if(Speed <= 100)
+	if(Speed <= FULL_SPEED)
 	{
 		PWM_PhaseCorrect(Speed,MOTOR_FREQUENCY_IN_HZ);
 		return OK;
@@ -158,6 +157,6 @@ void DC_Motor_Stop(uint8 Channel)
 void DC_Motor_Start(uint8 Channel)
 {
 	DC_Motor_Set_Speed(DEFAULT_SPEED);
-	Timers_timer1_Start();
+	Timers_Start(TIMER1);
 	DC_Motor_Set_Direction(Channel,DC_MOTOR_FORWARD); // Move Forward as A default Direction
 }

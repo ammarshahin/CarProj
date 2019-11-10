@@ -206,6 +206,36 @@ uint8 Timers_SetCounter(uint8 ch_no,uint16 count)
 	}
 	return cfg_Result;
 }
+
+
+
+/**
+ * Function : Timers_Set
+ * Description: Function to set the Timer Register To a value
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @param value the value to set   
+ * @return the Status of the Function [OK Or NOT_OK]
+ */
+uint8 Timers_Set(uint8 ch_no,uint16 value)
+{
+	switch (ch_no)
+	{
+		case TIMER0:
+		TCNT0 = value;
+		break;
+		case TIMER1:
+		TCNT1L = (uint8) value;
+		TCNT1H = (uint8) (value >> 8);
+		break;
+		case TIMER2:
+		TCNT2 = value;
+		break;
+		default:
+		break;
+	}
+	return OK;
+	
+}
 /**
  * Function : Timers_Start 
  * Description: start the counter/Timer
@@ -217,16 +247,18 @@ uint8 Timers_Start(uint8 ch_no)
 	switch (ch_no)
 	{
 	case TIMER0:
-		TCCR0 = ( (TCCR0 & 0xf8) | Gv_PrescallerTimer0_Mask);
+		TCCR0 |= Gv_PrescallerTimer0_Mask;
 		break;
 	case TIMER1:
+		TCCR1B |= Gv_PrescallerTimer1_Mask;
 		break;
 	case TIMER2:
+		TCCR2 |= Gv_PrescallerTimer2_Mask;
 		break;
 	default:
 		break;
 	}
-	return 1;
+	return OK;
 }
 
 
@@ -245,8 +277,10 @@ uint8 Timers_Stop(uint8 ch_no)
 		TCCR0 &= ~(0x07);
 		break;
 	case TIMER1:
+		TCCR1B &= ~(0x07);
 		break;
 	case TIMER2:
+		TCCR2 &= ~(0x07);
 		break;
 	default:
 		break;
@@ -269,8 +303,10 @@ uint32 Timers_Read(uint8 ch_no)
 		return TCNT0;
 		break;
 	case TIMER1:
+		return ((uint16) TCNT1L);
 		break;
 	case TIMER2:
+		return TCNT2;
 		break;
 	default:
 		break;

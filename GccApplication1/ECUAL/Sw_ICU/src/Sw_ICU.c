@@ -23,7 +23,7 @@
 /************************************************************************/
 /*				         Static Global Variables                        */
 /************************************************************************/
-static volatile uint8  Falling_Risin_Flag = 0;
+static volatile uint8  Falling_Raising_Flag = 0;
 static volatile uint8  numOfOverflows = 0;
 static volatile uint64 raising_time_ns = 0;
 
@@ -38,7 +38,6 @@ static volatile uint64 raising_time_ns = 0;
 uint8 SwICU_Init(void)
 {
 	Interrupts_ExtInt_Init(INT0,ANY_CHANGE);
-	//Timers_timer2_Init(T2_NORMAL_MODE,T2_OC0_DIS,T2_PRESCALER_1,0,0,T2_INTERRUPT_NORMAL);
 	Timers_Init(&timer2_cfg_s);
 	Interrupts_On();
 	return OK;
@@ -74,7 +73,7 @@ uint8 SwICU_Enable(void)
  */
 uint8 SwICU_Disable(void)
 {
-	Timers_timer2_Stop();
+	Timers_Stop(TIMER2);
 	return OK;
 }
 
@@ -85,20 +84,20 @@ uint8 SwICU_Disable(void)
  */
 ISR_T(INT0_vect)
 {
-	if(Falling_Risin_Flag == 0)
+	if(Falling_Raising_Flag == FALSE)
 	{
-		Timers_timer2_Set(0);
-		Timers_timer2_Start();
+		Timers_timer2_Set(FALSE);
+		Timers_Start(TIMER2);
 		numOfOverflows = 0;
-		Falling_Risin_Flag = 1;
+		Falling_Raising_Flag = TRUE;
 	}
-	else if(Falling_Risin_Flag == 1)
+	else if(Falling_Raising_Flag == TRUE)
 	{
 		raising_time_ns =  ( ( (numOfOverflows * REGISTER_BIT_MAXVALUE) + Timers_timer2_Read()) * ( F_CPU_PRESCALLER_FACTOR /F_CPU ) );
-		Timers_timer1_Stop();
-		numOfOverflows = 0;
-		Timers_timer2_Set(0);
-		Falling_Risin_Flag = 0;
+		Timers_Stop(TIMER2);
+		numOfOverflows = FALSE;
+		Timers_Set(TIMER2,FALSE);
+		Falling_Raising_Flag = FALSE;
 	}
 }
 
