@@ -1,9 +1,9 @@
 /*
-* Car_Control.c
-*
-* Created: 11/5/2019 1:51:29 PM
-*  Author: Ammar Shahin
-*/
+ *  File : Car_Control.c
+ *  Description : This file is used to control the car
+ *  Created on: Nov 5, 2019
+ *  Author: Ammar Shahin
+ */
 
 
 /************************************************************************/

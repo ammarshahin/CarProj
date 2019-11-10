@@ -1,8 +1,8 @@
 /*
- * Car_Control.h
- *
+ *  File : Car_Control.h
+ *  Description : This file is used to control the car
  *  Created on: Nov 5, 2019
- *      Author: AVE-LAP-052
+ *  Author: Ammar Shahin
  */
 
 #ifndef CAR_CONTROL_H_
