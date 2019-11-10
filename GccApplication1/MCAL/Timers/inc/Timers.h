@@ -1,20 +1,22 @@
 /*
  * timers.h
- *
+ * Description : This File is used to control the Timer Peripherals in the MCAL layer
  * Created: 10/22/2019 2:04:16 PM
- *  Author: AVE-LAP-44
+ *  Author: Ammar Shahin
  */ 
 
 
 #ifndef TIMERS_H_
 #define TIMERS_H_
 
-#include "Typedefs.h"
+/************************************************************************/
+/*                            Files Includes                            */
+/************************************************************************/
 #include "Timers_Lcfg.h"
-#include "MCU_Frequency.h"
+
 
 /************************************************************************/
-/*                     Timers' Registers                                  */
+/*                     Timers' Registers                                */
 /************************************************************************/
 #define TIMSK  *((reg_type)0x59)
 #define TIFR   *((reg_type)0x58)
@@ -36,10 +38,22 @@
 #define OCR2   *((reg_type)0x43)
 #define OCR0   *((reg_type)0x5C)
 
+/************************************************************************/
+/*                     Defines and Macros                               */
+/************************************************************************/
+#define TIMER0_MAX_COUNT 256
+#define TIMER1_MAX_COUNT 65536
+#define TIMER2_MAX_COUNT 256
 
-/************************************************************************/
-/*                   defined modes and preScaller_TIMER0s               */
-/************************************************************************/
+#define SECONDS_TO_NANOSECONSD_FACTOR  1000000000
+#define SECONDS_TO_MICROSECONSD_FACTOR 1000000
+#define SECONDS_TO_MILLISECONSD_FACTOR 1000
+#define DUTY_CYCLE_PERCENTAGE_FACTOR   100
+
+
+#define TIFR_TOV0_FLAG_MASK 0x01
+#define TIFR_TOV1_FLAG_MASK 0x04
+#define TIFR_TOV2_FLAG_MASK 0x40
 
 #define SWPWM_0_FREQ 40000UL 
 #define SWPWM_0_PORT MYPORTA
@@ -55,7 +69,7 @@
 
 
 
-// for timer 0
+/* for timer 0 */
 typedef enum {
 	T0_NORMAL_MODE=0x00,
 	T0_PWM_MODE=0x40,
@@ -87,7 +101,7 @@ typedef enum {
 
 
 
-// for timer 1
+/* for timer 1 */
 typedef enum {
 	T1_NORMAL_MODE=0x00							,
 	T1_PWM8Bit_MODE=0x01					    ,
@@ -137,9 +151,12 @@ typedef enum {
 
 
 
-// for timer 2
+/* for timer 2 */
 typedef enum {
-	T2_NORMAL_MODE=0x00,T2_PWM_MODE=0x40,T2_COMP_MODE=0x08,T2_FastPWM_MODE=0x48
+	T2_NORMAL_MODE=0x00,
+	T2_PWM_MODE=0x40,
+	T2_COMP_MODE=0x08,
+	T2_FastPWM_MODE=0x48
 }T2_MODE;
 
 typedef enum {
@@ -168,56 +185,258 @@ typedef enum {
 
 
 /************************************************************************/
-/*                   Timers' Functions' prototypes                      */
+/*                       Extern Global Variables                        */
 /************************************************************************/
 
+/* Global variables for the absolute value of the prescaller */
+extern volatile uint16 Gv_PrescallerTimer0_AbsoluteValue;
+extern volatile uint16 Gv_PrescallerTimer1_AbsoluteValue;
+extern volatile uint16 Gv_PrescallerTimer2_AbsoluteValue;
+
+/* Global variables for the Mask value of the prescaler (values set as default) */
+extern volatile uint8 Gv_PrescallerTimer0_Mask;
+extern volatile uint8 Gv_PrescallerTimer1_Mask;
+extern volatile uint8 Gv_PrescallerTimer2_Mask;
 
 /************************************************************************/
 /*                   Timers' Functions' prototypes                      */
 /************************************************************************/
-uint8  Timers_Init(Timers_CFG_S* cfg_s);
-uint8  Timers_Start(uint8 ch_no);
-uint8  Timers_Stop(uint8 ch_no);
-uint8  Timers_SetCounter(uint8 ch_no,uint16 count);
-uint8  Timers_GetStatus(uint8 ch_no);
+/**
+ * Function : Timers_Init
+ * Description: this function is to initialize the Timer0 
+ * @param cfg_s the Configuration Structure which include:
+ * 								1- the Channel of the Timer(Timer0,Timer1,Timer2)
+ *								2- the mode(Timer or counter)
+ * 								3- the amount of counters that the timer has to wait before in us
+ * 								4- the interrupt mask
+ * @return the Status of the initialization [OK Or NOT_OK] 
+ */
+uint8 Timers_Init(Timers_CFG_S* cfg_s);
+/**
+ * Function : Timers_SetCounter
+ * Description: Function to set the interrupt to come every no of us
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @param count the no to wait for 
+ * @return the Status of the initialization [OK Or NOT_OK]
+ */
+uint8 Timers_SetCounter(uint8 ch_no,uint16 count);
+
+/**
+ * Function : Timers_Start
+ * Description: start the counter/Timer
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @return the Status of the initialization [OK Or NOT_OK]
+ */
+uint8 Timers_Start(uint8 ch_no);
+/**
+ * Function : Timers_Start
+ * Description: Stop the Timer/Counter by setting the the prescaler pins to 0
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @return the Status of the initialization [OK Or NOT_OK]
+ */
+uint8 Timers_Stop(uint8 ch_no);
+
+/**
+ * Function : Timers_Read
+ * Description: Read the Timer/Counter Register
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * Return the value of the Register
+ */
 uint32 Timers_Read(uint8 ch_no);
+/*===========================Timer0 Control===============================*/
+
+/**
+ * Function : Timers_timer0_Init
+ * Description: this function is to initialize the Timer0 
+ * @param control the control Reg value which include the mode and the Gv_PrescallerTimer0_AbsoluteValue
+ * @param initialValue the initial value to be set in the TCNT0 Reg
+ * @param outputCompare the value to be set in the OCR0 Reg 
+ * @param interruptMask Enable or disable the interrupts of the Timer
+ */
+void Timers_timer0_Init(T0_MODE mode,T0_COM OC0,T0_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T0_INTERRUPT interruptMask);
+
+/**
+ * Function : Timers_timer0_Set
+ * Description: Function to set the timer Reg with a value
+ * @param value the value to set 
+ */
+void Timers_timer0_Set(uint8 value);
+
+/**
+ * Function : Timers_timer0_Read
+ * Description: read the value of the TCNT0 Register
+ * @return the value Read by the function
+ */
+uint8 Timers_timer0_Read(void);
+
+/**
+ * Function : Timers_timer0_Start
+ * Description: start the counter/Timer
+ */
+void Timers_timer0_Start(void);
 
 
-///*===========================Timer0 Control===============================*/
-//void Av_timer0Init(T0_MODE mode,T0_COM OC0,T0_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T0_INTERRUPT interruptMask);
-//void Av_timer0Set(uint8 value);
-//uint8 Av_timer0Read(void);
-//void Av_timer0Start(void);
-//void Av_timer0Stop(void);
-//void Av_timer0Delay_ms(uint16 delay);
-//void Av_timer0Delay_ns(uint32 delay);
-//void Av_timer0SwPWM(uint8 dutyCycle,uint64 freq);
+/**
+ * Function : Timers_timer0_Stop
+ * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
+ */
+void Timers_timer0_Stop(void);
+
+/**
+ * Function : Timers_timer0_Delay_ms
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ms
+ */
+void Timers_timer0_Delay_ms(uint16 delay);
+
+/**
+ * Timers_timer0_Delay_ns
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ns
+ */
+void Timers_timer0_Delay_ns(uint32 delay);
+
+/**
+ * Timers_timer0_SwPWM
+ * Description: Timers_timer0_SwPWM is a function to generate a software PWM on a GPIO pin 
+			the freq, port, and the pin of the output in the timers.h 
+ * @param dutyCycle : the duty cycle of the PWM in percentage
+ * @param freq : the frequency of the PWM in Hz
+ */
+void Timers_timer0_SwPWM(uint8 dutyCycle,uint64 freq);
+
 
 /*===========================Timer1 Control===============================*/
-void Av_timer1Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 initialValue, uint8 outputCompareLow, uint8 outputCompareHigh,uint16 inputCapture, T1_INTERRUPT interruptMask);
-void Av_timer1SetA(uint8 value);
-void Av_timer1SetB(uint8 value);
-uint8 Av_timer1ReadA(void);
-uint8 Av_timer1ReadB(void);
-void Av_timer1Start(void);
-void Av_timer1Stop(void);
-void Av_timer1Delay_ms(uint16 delay);
-void Av_timer1Delay_ns(uint32 delay);
-void Av_timer1SwPWM(uint8 dutyCycle,uint64 freq);
-void fastPWM_Init(uint8 dutyCycle,uint8 freq);
-void PWM_PhaseCorrect_Init(uint8 dutyCycle,uint8 freq);
+
+/**
+ * Description:						 This function is to initialize timer 1. 
+ * @param mode:						 The mode of the timer
+ * @param OC:						 Compare match pin status
+ * @param prescal:					 The prescaler of the timer
+ * @param initialValue:				 The initial Value to be set
+ * @param outputCompareLow:			 The low Reg set value
+ * @param outputCompareHigh:         The High Reg set value
+ * @param inputCapture:              The input Capture status
+ * @param interruptMask:             The interrupt status
+ */
+void Timers_timer1_Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 initialValue, uint8 outputCompareLow, uint8 outputCompareHigh,uint16 inputCapture, T1_INTERRUPT interruptMask);
+
+/**
+ * Function : Timers_timer1_SetLowReg 
+ * Description: set the Reg TCNT1L to a value
+ * @param value the value to be set with no more than 256
+ */
+
+void Timers_timer1_SetLowReg(uint8 value);
+/**
+ * Description: set the Reg TCNT1H to a value
+ * @param value the value to be set with no more than 256
+ */
+
+void Timers_timer1_SetHighReg(uint8 value);
+
+/**
+ * Description: read the value of the TCNT1L Register
+ * @return return the value
+ */
+
+uint8 Timers_timer1_ReadLowReg(void);
+
+/**
+ * Description: read the value of the TCNT1H Register
+ * @return return the value
+ */
+uint8 Timers_timer1_ReadHighReg(void);
+
+/**
+ * Description: start the counting from the moment of this function call
+  * @param value the value to be set in the prescaller pins in the TCCR2 Reg
+ */
+void Timers_timer1_Start(void);
+
+/**
+* Description: Stop the Timer/Counter by setting the the prescaller pins to 0
+*/
+void Timers_timer1_Stop(void);
+/**
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ms
+ */
+void Timers_timer1_Delay_ms(uint16 delay);
+
+
+
+/**
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ns
+ */
+void Timers_timer1_Delay_ns(uint32 delay);
+
+/**
+ * Description: Timers_timer1_SwPWM is a function to generate a software PWM on a GPIO pin 
+			the freq, port, and the pin of the output is configured in timers.h 
+ * @param dutyCycle : the duty cycle of the PWM in percentage
+ * @param freq : the frequency of the PWM in Hz
+ */
+void Timers_timer1_SwPWM(uint8 dutyCycle,uint64 freq);
+
 
 /*===========================Timer2 Control===============================*/
-void Av_timer2Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T2_INTERRUPT interruptMask);
-void Av_timer2Set(uint8 value);
-uint8 Av_timer2Read(void);
-void Av_timer2Start(void);
-void Av_timer2Stop(void);
-void Av_timer2Delay_ms(uint16 delay);
-void Av_timer2Delay_ns(uint32 delay);
-void Av_timer2SwPWM(uint8 dutyCycle,uint64 freq);
 
-//void AVE_timer1PWM(uint8 dutycycle , uint16 freq );
-void Av_timer1PWM(uint8 dutycycle , uint16 freq );
+/**
+ * Description: this function is to initialize the Timer2 
+ * @mode  the mode of the timer
+ * @param OC0 the output pin
+ * @param prescal the prescaller of the timer
+ * @param initialValue the initial value to be set in the TCNT0 Reg
+ * @param outputCompare the value to be set in the OCR0 Reg 
+ * @param interruptMask Enable or disable the interrupts of the Timer
+ */
+void Timers_timer2_Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T2_INTERRUPT interruptMask);
+
+/**
+ * Description: set the Reg TCNT2 to a value
+ * @param value the value to be set with no more than 255
+ */
+
+void Timers_timer2_Set(uint8 value);
+
+/**
+ * Description: read the value of the TCNT2 Register
+ * @return return the value
+ */
+
+uint8 Timers_timer2_Read(void);
+
+/**
+ * Description: start the counting from the moment of this function call
+  * @param value the value to be set in the prescaller pins in the TCCR2 Reg
+ */
+void Timers_timer2_Start(void);
+
+/**
+ * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
+ */
+void Timers_timer2_Stop(void);
+
+/**
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ms
+ */
+void Timers_timer2_Delay_ms(uint16 delay);
+
+
+/**
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ns
+ */
+void Timers_timer2_Delay_ns(uint32 delay);
+/**
+ * Description: Timers_timer2_SwPWM is a function to generate a software PWM on a GPIO pin 
+			the freq, port, and the pin of the output in the timers.h 
+ * @param dutyCycle : the duty cycle of the PWM in percentage
+ */
+void Timers_timer2_SwPWM(uint8 dutyCycle,uint64 freq);
+
 
 #endif /* TIMERS_H_ */

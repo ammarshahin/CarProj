@@ -1,20 +1,43 @@
 /*
- * gpio.c
- *
- * Created: 10/21/2019 3:00:07 PM
+ * Gpio.c
+ *  Description : This file is to control the Gpio module in the MCAL Layer
+ * Created: 10/21/2019 3:00:30 PM
  *  Author: Ammar Shahin
  */ 
 
+/************************************************************************/
+/*				 		       Files Includes                           */
+/************************************************************************/
 #include "Gpio.h"
 
 /************************************************************************/
-/*				 GPIO functions' Definitions                            */
+/*				    Privet defines and macros                           */
 /************************************************************************/
+
+/********* Memory GPIO Register Maping *************/
+#define PORT_A  *((reg_type)0X3B)
+#define DDR_A   *((reg_type)0X3A)
+#define PIN_A   *((reg_type)0X39)
+#define PORT_B  *((reg_type)0X38)
+#define DDR_B   *((reg_type)0X37)
+#define PIN_B   *((reg_type)0X36)
+#define PORT_C  *((reg_type)0X35)
+#define DDR_C   *((reg_type)0X34)
+#define PIN_C   *((reg_type)0X33)
+#define PORT_D  *((reg_type)0X32)
+#define DDR_D   *((reg_type)0X31)
+#define PIN_D   *((reg_type)0X30)
+
+/************************************************************************/
+/*				      GPIO functions' Definitions                       */
+/************************************************************************/
+
 /*===========================PORT Control===============================*/
 /**
- * Description: Used to set the Direction of the PORT
- * @param port : the port Name [MYPORTA,MYPORTB,MYPORTC, or MYPORTD]
- * @param direction : the Direction
+ * Description: This Function is used to initialize the direction of the port Selected
+ * @param port : the port {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param direction : The Direction of the Port >> {SET_IN , SET_OUT}
+ * Return : void
  */
 void Gpio_PortDirection(uint8 port, uint8 direction)
 {
@@ -36,9 +59,10 @@ void Gpio_PortDirection(uint8 port, uint8 direction)
 }
 
 /**
- * Description: Write A value to the Port that has been selected as an output
- * @param port : the Port that I want to write to
- * @param value : the value to set (0 >> 128)
+ * Description: This Function is used to Write a value to the port Selected
+ * @param port : the port {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param value : The value of the Port
+ * Return : void
  */
 void Gpio_PortWrite(uint8 port, uint8 value)
 {
@@ -58,9 +82,11 @@ void Gpio_PortWrite(uint8 port, uint8 value)
 			break;
 	}
 }
+
 /**
- * Description: toggle the value of the port
- * @param port : the port
+ * Description: This Function is used to Toggle the value of the port Selected
+ * @param port : the port {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : void
  */
 void Gpio_PortToggle(uint8 port)
 {
@@ -82,9 +108,9 @@ void Gpio_PortToggle(uint8 port)
 }
 
 /**
- * Description: Read the value of the port (PIN Reg)
- * @param port : the Port that I want to Read from (PIN Reg only)
- * @return the value of the Reg
+ * Description: This Function is used to Read the value of the port Selected
+ * @param port : the port {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : the value read by the function
  */
 uint8 Gpio_PortRead(uint8 port)
 {
@@ -109,10 +135,11 @@ uint8 Gpio_PortRead(uint8 port)
 
 /*===========================PIN Control===============================*/
 /**
- * Description:
- * @param port
- * @param pins
- * @param direction
+ * Description: This Function is used to initialize the direction of the pin Selected
+ * @param port : the port that includes the pin {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param pins : the pin Number {BIT0,BIT1,BIT2,BIT3,BIT4,BIT5,BIT6,BIT7}
+ * @param direction : The Direction of the PIN >> {SET_IN , SET_OUT}
+ * Return : void
  */
 void Gpio_PinDirection(uint8 port, uint8 pins, uint8 direction)
 {
@@ -175,10 +202,11 @@ void Gpio_PinDirection(uint8 port, uint8 pins, uint8 direction)
 }
 
 /**
- * Description:
- * @param port
- * @param pins
- * @param value
+ * Description: This Function is used to Write a value of the pin Selected
+ * @param port : the port that includes the pin {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param pins : the pin Number {BIT0,BIT1,BIT2,BIT3,BIT4,BIT5,BIT6,BIT7}
+ * @param value : The value of the PIN >> {HIGH , LOW}
+ * Return : void
  */
 void Gpio_PinWrite(uint8 port, uint8 pins, uint8 value)
 {
@@ -221,10 +249,12 @@ void Gpio_PinWrite(uint8 port, uint8 pins, uint8 value)
 		break;	
 	}
 }
+
 /**
- * Description:
- * @param port
- * @param pins
+ * Description: This Function is used to Toggle a value of the pin Selected
+ * @param port : the port that includes the pin {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param pins : the pin Number {BIT0,BIT1,BIT2,BIT3,BIT4,BIT5,BIT6,BIT7}
+ * Return : void
  */
 void Gpio_PinToggle(uint8 port, uint8 pins)
 {
@@ -245,10 +275,10 @@ void Gpio_PinToggle(uint8 port, uint8 pins)
 	}
 }
 /**
- * Description:
- * @param port
- * @param pin
- * @return
+ * Description: This Function is used to Read the value of the pin Selected
+ * @param port : the port that includes the pin {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param pins : the pin Number {BIT0,BIT1,BIT2,BIT3,BIT4,BIT5,BIT6,BIT7}
+ * Return : the value Read by the function 
  */
 uint8 Gpio_PinRead(uint8 port, uint8 pin)
 {
@@ -272,9 +302,10 @@ uint8 Gpio_PinRead(uint8 port, uint8 pin)
 }
 /*===========================Upper Nibble Control===============================*/
 /**
- * Description:
- * @param port
- * @param direction
+ * Description: This Function is used to initialize the direction of the UpperNibble
+ * @param port : the port that includes the UpperNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param direction : The Direction of the UpperNibble >> {SET_IN , SET_OUT}
+ * Return : void
  */
 void Gpio_UpperNibbleDirection(uint8 port, uint8 direction)
 {
@@ -334,10 +365,12 @@ void Gpio_UpperNibbleDirection(uint8 port, uint8 direction)
 		break;
 	}
 }
+
 /**
- * Description:
- * @param port
- * @param value
+ * Description: This Function is used to Write a value of the UpperNibble Selected
+ * @param port : the port that includes the UpperNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param value : The value of the UpperNibble
+ * Return : void
  */
 void Gpio_UpperNibbleWrite(uint8 port, uint8 value)
 {
@@ -357,9 +390,11 @@ void Gpio_UpperNibbleWrite(uint8 port, uint8 value)
 		break;
 	}
 }
+
 /**
- * Description:
- * @param port
+ * Description: This Function is used to Toggle a value of the UpperNibble Selected
+ * @param port : the port that includes the UpperNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : void
  */
 void Gpio_UpperNibbleToggle(uint8 port)
 {
@@ -381,9 +416,9 @@ void Gpio_UpperNibbleToggle(uint8 port)
 }
 
 /**
- * Description:
- * @param port
- * @return
+ * Description: This Function is used to Read the value of the UpperNibble Selected
+ * @param port : the port that includes the UpperNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : the value Read by the function 
  */
 uint8 Gpio_UpperNibbleRead(uint8 port)
 {
@@ -408,9 +443,10 @@ uint8 Gpio_UpperNibbleRead(uint8 port)
 
 /*===========================Lower Nibble Control===============================*/
 /**
- * Description:
- * @param port
- * @param direction
+ * Description: This Function is used to initialize the direction of the LowerNibble
+ * @param port : the port that includes the LowerNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param direction : The Direction of the LowerNibble >> {SET_IN , SET_OUT}
+ * Return : void
  */
 void Gpio_LowerNibbleDirection(uint8 port, uint8 direction)
 {
@@ -472,9 +508,10 @@ void Gpio_LowerNibbleDirection(uint8 port, uint8 direction)
 }
 
 /**
- * Description:
- * @param port
- * @param value
+ * Description: This Function is used to Write a value of the LowerNibble Selected
+ * @param port : the port that includes the LowerNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * @param value : The value of the LowerNibble
+ * Return : void
  */
 void Gpio_LowerNibbleWrite(uint8 port, uint8 value)
 {
@@ -496,8 +533,9 @@ void Gpio_LowerNibbleWrite(uint8 port, uint8 value)
 }
 
 /**
- * Description:
- * @param port
+ * Description: This Function is used to Toggle a value of the LowerNibble Selected
+ * @param port : the port that includes the LowerNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : void
  */
 void Gpio_LowerNibbleToggle(uint8 port)
 {
@@ -517,10 +555,11 @@ void Gpio_LowerNibbleToggle(uint8 port)
 		break;
 	}
 }
+
 /**
- * Description:
- * @param port
- * @return
+ * Description: This Function is used to Read the value of the LowerNibble Selected
+ * @param port : the port that includes the LowerNibble {MYPORTA,MYPORTB,MYPORTC,MYPORTD}
+ * Return : the value read by the function 
  */
 uint8 Gpio_LowerNibbleRead(uint8 port)
 {

@@ -158,6 +158,8 @@
       <Value>../Service/SwDelay/src</Value>
       <Value>../MCAL/timers/inc</Value>
       <Value>../MCAL/Timers/src</Value>
+      <Value>../MCAL/PWM/inc</Value>
+      <Value>../MCAL/PWM/src</Value>
     </ListValues>
   </avrgcc.compiler.directories.IncludePaths>
   <avrgcc.compiler.optimization.level>Optimize (-O1)</avrgcc.compiler.optimization.level>
@@ -242,9 +244,6 @@
     <Compile Include="MCAL\Gpio\inc\Gpio.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="MCAL\Gpio\inc\Gpio_Registers.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="MCAL\Gpio\src\Gpio.c">
       <SubType>compile</SubType>
     </Compile>
@@ -255,6 +254,12 @@
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="MCAL\MCU\inc\MCU_Frequency.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="MCAL\PWM\inc\PWM.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="MCAL\PWM\src\PWM.c">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="MCAL\Timers\inc\Timers.h">
@@ -309,6 +314,9 @@
     <Folder Include="MCAL\MCU" />
     <Folder Include="MCAL\MCU\inc\" />
     <Folder Include="MCAL\MCU\src\" />
+    <Folder Include="MCAL\PWM" />
+    <Folder Include="MCAL\PWM\inc" />
+    <Folder Include="MCAL\PWM\src" />
     <Folder Include="MCAL\Timers" />
     <Folder Include="MCAL\Timers\inc\" />
     <Folder Include="MCAL\Timers\src\" />

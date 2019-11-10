@@ -43,7 +43,7 @@ void Ultrasonic_Init(void)
 void Ultrasonic_Trigger(void)
 {
 	Gpio_PinWrite(ULTRASONIC_TRIGGER_PORT,ULTRASONIC_TRIGGER_PIN,HIGH);
-	SwDelay_ms(10);
+	SwDelay_us(10);
 	Gpio_PinWrite(ULTRASONIC_TRIGGER_PORT,ULTRASONIC_TRIGGER_PIN,LOW);
 }
 

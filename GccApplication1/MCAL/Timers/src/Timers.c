@@ -1,140 +1,223 @@
 /*
- * timers.c
- *
- * Created: 10/22/2019 2:04:00 PM
+ * Timers.c
+ * Description : This File is used to control the Timer Peripherals in the MCAL layer
+ * Created: 10/22/2019 2:04:16 PM
  *  Author: Ammar Shahin
  */ 
 
+/************************************************************************/
+/*                            Files Includes                            */
+/************************************************************************/
 #include "Typedefs.h"
-#include "Gpio_Registers.h"
 #include "Gpio.h"
 #include "Timers_Lcfg.h"
 #include "Timers.h"
-#include "Ultrasonic.h"
+ 
+/************************************************************************/
+/*                          Global Variables                            */
+/************************************************************************/
 
-volatile uint16 preScaller_TIMER0;
-volatile uint16 preScaller_TIMER1;
-volatile uint16 preScaller_TIMER2;
+/* Global variables for the absolute value of the prescaller */
+volatile uint16 Gv_PrescallerTimer0_AbsoluteValue;
+volatile uint16 Gv_PrescallerTimer1_AbsoluteValue;
+volatile uint16 Gv_PrescallerTimer2_AbsoluteValue;
 
-volatile uint8 prescaller0 = 0x05; // set the prescaler to 1024
-volatile uint8 prescaller1 = 0;
-volatile uint8 prescaller2 = 0;
+/* Global variables for the Mask value of the prescaler (values set as default) */
+volatile uint8 Gv_PrescallerTimer0_Mask = T0_PRESCALER_1;
+volatile uint8 Gv_PrescallerTimer1_Mask = T1_PRESCALER_1024;
+volatile uint8 Gv_PrescallerTimer2_Mask = T2_PRESCALER_1;
 
-volatile uint32 gv_F_CPU;
-volatile uint8 gv_Count;
+static volatile uint32 Gv_F_CPU;
+static volatile uint8  Gv_Count;
 
 
 /************************************************************************/
 /*                   Timers' Functions' Implementations                 */
 /************************************************************************/
-
-
-
 /**
+ * Function : Timers_Init
  * Description: this function is to initialize the Timer0 
  * @param cfg_s the Configuration Structure which include:
  * 								1- the Channel of the Timer(Timer0,Timer1,Timer2)
  *								2- the mode(Timer or counter)
- * 								3- the amount of counters that the timer has to wait before in MS
+ * 								3- the amount of counters that the timer has to wait before in us
  * 								4- the interrupt mask
- * @return the Status of the initialization [1 for success and 0 for failure] 
+ * @return the Status of the initialization [OK Or NOT_OK] 
  */
 uint8 Timers_Init(Timers_CFG_S* cfg_s)
 {
-		uint8 prescal;
-		uint32 no_Of_Count;
-		gv_F_CPU = cfg_s->CPU_CLK;
-		switch (cfg_s->ch_no)
-		{
+	uint8 cfg_Result = NOT_OK;
+	Gv_F_CPU = cfg_s->CPU_CLK;
+	switch (cfg_s->ch_no)
+	{
 			case TIMER0:
-						TCCR0 |= cfg_s->Timers_Mode;
-						TIMSK |= cfg_s->Timers_Interrupt;
-						prescal = prescaller0; 
-						switch(prescal)
-						{
-							case 0 :
-							preScaller_TIMER0= 0;
-							break;
-							case  1 :
-							preScaller_TIMER0= 1;
-							break;
-							case  2 :
-							preScaller_TIMER0= 8;
-							break;
-							case  3 :
-							preScaller_TIMER0= 64;
-							break;
-							case  4 :
-							preScaller_TIMER0= 256;
-							break;
-							case  5 :
-							preScaller_TIMER0= 1024;
-							break;
-						}
-						no_Of_Count = ( cfg_s->Timers_count / 128);
-						if(no_Of_Count > 254)
-						{
-							return 0;
-						}
-						else
-						{
-						gv_Count = 265 - no_Of_Count;
-						TCNT0 = gv_Count;
-						}
+			TCCR0 |= cfg_s->Timers_Mode;
+			TIMSK |= cfg_s->Timers_Interrupt;
+			switch(Gv_PrescallerTimer0_Mask)
+			{
+				case T0_NO_CLOCK :
+				Gv_PrescallerTimer0_AbsoluteValue = 0;
+				break;
+				case  T0_PRESCALER_1 :
+				Gv_PrescallerTimer0_AbsoluteValue = 1;
+				break;
+				case  T0_PRESCALER_8 :
+				Gv_PrescallerTimer0_AbsoluteValue = 8;
+				break;
+				case  T0_PRESCALER_64 :
+				Gv_PrescallerTimer0_AbsoluteValue = 64;
+				break;
+				case  T0_PRESCALER_256 :
+				Gv_PrescallerTimer0_AbsoluteValue = 256;
+				break;
+				case  T0_PRESCALER_1024 :
+				Gv_PrescallerTimer0_AbsoluteValue = 1024;
+				break;
+			}
+			cfg_Result = OK;
 			break;
+			
 			case TIMER1:				
+			TCCR1A |= (cfg_s->Timers_Mode & 0x03);
+			TCCR1B |= (cfg_s->Timers_Mode & 0x18);
+			TCCR1A |= T1_OC1A_CLEAR;
+			Gpio_PinDirection(MYPORTD,BIT5,SET_OUT);
+			switch(Gv_PrescallerTimer1_Mask)
+			{
+				case T1_NO_CLOCK :
+				Gv_PrescallerTimer1_AbsoluteValue = 0;
+				break;
+				case  T1_PRESCALER_1 :
+				Gv_PrescallerTimer1_AbsoluteValue = 1;
+				break;
+				case  T1_PRESCALER_8 :
+				Gv_PrescallerTimer1_AbsoluteValue = 8;
+				break;
+				case  T1_PRESCALER_64 :
+				Gv_PrescallerTimer1_AbsoluteValue = 64;
+				break;
+				case  T1_PRESCALER_256 :
+				Gv_PrescallerTimer1_AbsoluteValue = 256;
+				break;
+				case  T1_PRESCALER_1024 :
+				Gv_PrescallerTimer1_AbsoluteValue = 1024;
+				break;
+			}
+			cfg_Result = OK;
 			break;
+			
 			case TIMER2:	
+			TCCR2 |= cfg_s->Timers_Mode;
+			TIMSK |= cfg_s->Timers_Interrupt;
+			switch(Gv_PrescallerTimer2_Mask)
+			{
+				case T2_NO_CLOCK :
+				Gv_PrescallerTimer2_AbsoluteValue = 0;
+				break;
+				case  T2_PRESCALER_1 :
+				Gv_PrescallerTimer2_AbsoluteValue = 1;
+				break;
+				case  T2_PRESCALER_8 :
+				Gv_PrescallerTimer2_AbsoluteValue = 8;
+				break;
+				case  T2_PRESCALER_64 :
+				Gv_PrescallerTimer2_AbsoluteValue = 64;
+				break;
+				case  T2_PRESCALER_256 :
+				Gv_PrescallerTimer2_AbsoluteValue = 256;
+				break;
+				case  T2_PRESCALER_1024 :
+				Gv_PrescallerTimer2_AbsoluteValue = 1024;
+				break;
+			}
+			cfg_Result = OK;
 			break;
+			
 			default:
+			cfg_Result = NOT_OK;
 			break;
-		}
-		return 1;
+	}
+	Timers_SetCounter(cfg_s->ch_no,cfg_s->Timers_count);
+	return cfg_Result;
 }
 
 
 
 
 /**
- * Description: Function to set the timer Reg with a value
- * @param value the value to set 
+ * Function : Timers_SetCounter
+ * Description: Function to set the interrupt to come every no of us
+ * @param ch_no the Timer no {TIMER0,TIMER1,TIMER2}
+ * @param count the no to wait for 
+ * @return the Status of the initialization [OK Or NOT_OK]
  */
 uint8 Timers_SetCounter(uint8 ch_no,uint16 count)
 {
-	uint32 no_Of_Count;
+	uint32 no_Of_Counts,cfg_Result = NOT_OK;
 	switch (ch_no)
 	{
 	case TIMER0:
-		no_Of_Count = ( count / 128);
-		if(no_Of_Count > 254)
+		no_Of_Counts = ( count / ( Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		if(no_Of_Counts > TIMER0_MAX_COUNT)
 		{
-			return 0;
+			cfg_Result = NOT_OK;
 		}
 		else
 		{
-			gv_Count = 265 - no_Of_Count;
-			TCNT0 = gv_Count;
+			Gv_Count = TIMER0_MAX_COUNT - no_Of_Counts;
+			TCNT0 = Gv_Count;
+			cfg_Result = OK;
 		}
 		break;
+		
 	case TIMER1:
-		break;
+		no_Of_Counts = ( count / ( Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		if(no_Of_Counts > TIMER1_MAX_COUNT)
+		{
+			cfg_Result = NOT_OK;
+		}
+		else
+		{
+			Gv_Count = TIMER1_MAX_COUNT - no_Of_Counts;
+			TCNT1L = (uint8)Gv_Count;
+			TCNT1H = (uint8)( Gv_Count >> 8);
+			cfg_Result = OK;
+		}
+	break;
+	
 	case TIMER2:
-		break;
+		no_Of_Counts = ( count / ( Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		if(no_Of_Counts > TIMER2_MAX_COUNT)
+		{
+			cfg_Result = NOT_OK;
+		}
+		else
+		{
+			Gv_Count = TIMER2_MAX_COUNT - no_Of_Counts;
+			TCNT2 = Gv_Count;
+			cfg_Result = OK;
+		}
+	break;
+	
 	default:
-		break;
+		cfg_Result = NOT_OK;
+	break;
+	
 	}
-	return 1;
+	return cfg_Result;
 }
-
 /**
+ * Function : Timers_Start 
  * Description: start the counter/Timer
+ * @param ch_no : The timer Channel >> {TIMER0,TIMER1,TIMER2}
+ * @return the Status of the initialization [OK Or NOT_OK]
  */
 uint8 Timers_Start(uint8 ch_no)
 {
 	switch (ch_no)
 	{
 	case TIMER0:
-		TCCR0 = ( (TCCR0 & 0xf8) | prescaller0);
+		TCCR0 = ( (TCCR0 & 0xf8) | Gv_PrescallerTimer0_Mask);
 		break;
 	case TIMER1:
 		break;
@@ -147,8 +230,12 @@ uint8 Timers_Start(uint8 ch_no)
 }
 
 
+
 /**
- * Description: Stop the Timer/Counter by setting the the prescaler pins to 0
+ * Function : Timers_Stop 
+ * Description: Stop the Timer/Counter by setting the the prescaler pins to 0 
+ * @param ch_no : The timer Channel >> {TIMER0,TIMER1,TIMER2}
+ * @return the Status of the initialization [OK Or NOT_OK]
  */
 uint8 Timers_Stop(uint8 ch_no)
 {
@@ -169,7 +256,10 @@ uint8 Timers_Stop(uint8 ch_no)
 
 
 /**
- * Description: Read the Timer/Counter Refister
+ * Function : Timers_Read 
+ * Description: Read the Timer/Counter Register
+ * @param ch_no : The timer Channel >> {TIMER0,TIMER1,TIMER2}
+ * return the value read by the function
  */
 uint32 Timers_Read(uint8 ch_no)
 {
@@ -188,155 +278,158 @@ uint32 Timers_Read(uint8 ch_no)
 	return 0;
 }
 
+/*===========================Timer0 Control===============================*/
+
+/**
+ * Function : Timers_timer0_Init
+ * Description: this function is to initialize the Timer0 
+ * @param control the control Reg value which include the mode and the Gv_PrescallerTimer0_AbsoluteValue
+ * @param initialValue the initial value to be set in the TCNT0 Reg
+ * @param outputCompare the value to be set in the OCR0 Reg 
+ * @param interruptMask Enable or disable the interrupts of the Timer
+ */
+void Timers_timer0_Init(T0_MODE mode,T0_COM OC0,T0_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T0_INTERRUPT interruptMask)
+{
+	TCCR0 |= (mode|OC0);
+	TCNT0 = initialValue;
+	OCR0  = outputCompare;
+	TIMSK |= interruptMask;
+	Gv_PrescallerTimer0_Mask = prescal;
+		switch(prescal)
+		{
+			case T0_NO_CLOCK :
+			Gv_PrescallerTimer0_AbsoluteValue= 0;
+			break;
+			case  T0_PRESCALER_1 :
+			Gv_PrescallerTimer0_AbsoluteValue= 1;
+			break;
+			case  T0_PRESCALER_8 :
+			Gv_PrescallerTimer0_AbsoluteValue= 8;
+			break;
+			case  T0_PRESCALER_64 :
+			Gv_PrescallerTimer0_AbsoluteValue= 64;
+			break;
+			case  T0_PRESCALER_256 :
+			Gv_PrescallerTimer0_AbsoluteValue= 256;
+			break;
+			case  T0_PRESCALER_1024 :
+			Gv_PrescallerTimer0_AbsoluteValue= 1024;
+			break;
+		}
+}
+
+/**
+ * Function : Timers_timer0_Set
+ * Description: Function to set the timer Reg with a value
+ * @param value the value to set 
+ */
+void Timers_timer0_Set(uint8 value)
+{
+	TCNT0 = value;
+}
+
+/**
+ * Function : Timers_timer0_Read
+ * Description: read the value of the TCNT0 Register
+ * @return the value Read by the function
+ */
+uint8 Timers_timer0_Read(void)
+{
+	return TCNT0;
+}
+
+/**
+ * Function : Timers_timer0_Start
+ * Description: start the counter/Timer
+ */
+void Timers_timer0_Start(void)
+{
+	TCCR0 |= Gv_PrescallerTimer0_Mask;
+}
 
 
+/**
+ * Function : Timers_timer0_Stop
+ * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
+ */
+void Timers_timer0_Stop(void)
+{
+	TCCR0 &= ~(0x07);
+}
+
+/**
+ * Function : Timers_timer0_Delay_ms
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ms
+ */
+void Timers_timer0_Delay_ms(uint16 delay)
+{
+	volatile sint64 counter = ((sint64)delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
+	TCNT0 = 0;
+	Timers_timer0_Start();
+	while(counter--)
+	{
+		while( (TIFR & TIFR_TOV0_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV0_FLAG_MASK;
+	}
+	Timers_timer0_Stop();
+}
 
 
+/**
+ * Timers_timer0_Delay_ns
+ * Description: Delay function pooling based to block the code for a specific amount of time
+ * @param delay the time I want to delay in ns
+ */
+void Timers_timer0_Delay_ns(uint32 delay)
+{
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	Timers_timer0_Start();
+	while(counter--)
+	{
+		while( (TIFR & TIFR_TOV0_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV0_FLAG_MASK;
+	}
+	Timers_timer0_Stop();
+}
 
-
-
-
-///*===========================Timer0 Control===============================*/
-///**
- //* Description: this function is to initialize the Timer0 
- //* @param control the control Reg value which include the mode and the preScaller_TIMER0
- //* @param initialValue the initial value to be set in the TCNT0 Reg
- //* @param outputCompare the value to be set in the OCR0 Reg 
- //* @param interruptMask Enable or disable the interrupts of the Timer
- //*/
-//void Av_timer0Init(T0_MODE mode,T0_COM OC0,T0_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T0_INTERRUPT interruptMask)
-//{
-	//TCCR0 |= (mode|OC0);
-	//TCNT0 = initialValue;
-	//OCR0  = outputCompare;
-	//TIMSK |= interruptMask;
-	//prescaller0 = prescal;
-		//switch(prescal)
-		//{
-			//case T0_NO_CLOCK :
-			//preScaller_TIMER0= 0;
-			//break;
-			//case  T0_PRESCALER_1 :
-			//preScaller_TIMER0= 1;
-			//break;
-			//case  T0_PRESCALER_8 :
-			//preScaller_TIMER0= 8;
-			//break;
-			//case  T0_PRESCALER_64 :
-			//preScaller_TIMER0= 64;
-			//break;
-			//case  T0_PRESCALER_256 :
-			//preScaller_TIMER0= 256;
-			//break;
-			//case  T0_PRESCALER_1024 :
-			//preScaller_TIMER0= 1024;
-			//break;
-		//}
-//}
-//
-///**
- //* Description: Function to set the timer Reg with a value
- //* @param value the value to set 
- //*/
-//void Av_timer0Set(uint8 value)
-//{
-	//TCNT0 = value;
-//}
-//
-///**
- //* Description: read the value of the TCNT0 Register
- //* @return return the value
- //*/
-//uint8 Av_timer0Read(void)
-//{
-	//return TCNT0;
-//}
-//
-///**
- //* Description: start the counter/Timer
- //*/
-//void Av_timer0Start(void)
-//{
-	//TCCR0 |= prescaller0;
-//
-//}
-//
-//
-///**
- //* Description: Stop the Timer/Counter by setting the the prescaller pins to 0
- //*/
-//void Av_timer0Stop(void)
-//{
-	//TCCR0 &= ~(0x07);
-//}
-//
-///**
- //* Description: Delay function pooling based to block the code for a specific amount of time
- //* @param delay the time I want to delay in ms
- //*/
-//void Av_timer0Delay_ms(uint16 delay)
-//{
-	//volatile sint64 counter = ((sint64)delay) * F_CPU / (256.0 * preScaller_TIMER0 * 1000.0);
-	//TCNT0 = 0;
-	//Av_timer0Start();
-	//while(counter-- > 0)
-	//{
-		//while( (TIFR & 0x01) == 0);
-		//TIFR |= 0x01;
-	//}
-	//Av_timer0Stop();
-//}
-//
-//
-//
-///**
- //* Description: Delay function pooling based to block the code for a specific amount of time
- //* @param delay the time I want to delay in ns
- //*/
-//void Av_timer0Delay_ns(uint32 delay)
-//{
-	//volatile sint64 counter = ((uint64) delay) * F_CPU / (256.0 * preScaller_TIMER0 * 1000000000.0);
-	//Av_timer0Start();
-	//while(counter-- > 0)
-	//{
-		//while( (TIFR & 0x01) == 0);
-		//TIFR |= 0x01;
-	//}
-	//Av_timer0Stop();
-//}
-//
-///**
- //* Description: Av_timer0SwPWM is a function to generate a software PWM on a GPIO pin 
-			//the freq, port, and the pin of the output in the timers.h 
- //* @param dutyCycle : the duty cycle of the PWM in percentage
- //* @param freq : the frequency of the PWM in Hz
- //*/
-//void Av_timer0SwPWM(uint8 dutyCycle,uint64 freq)
-//{
-	//uint32 time_Total_ns = (1000000000 / freq);
-	//uint32 time_On_ns  = ((dutyCycle/100.0) * time_Total_ns);
-	//uint32 time_Off_ns = time_Total_ns - time_On_ns;
-	//Gpio_PinDirection(SWPWM_0_PORT,SWPWM_0_PIN,SET_OUT);
-	//while(1)
-	//{
-		//Gpio_PinWrite(SWPWM_0_PORT,SWPWM_0_PIN,TRUE);
-		//Av_timer0Delay_ns(time_On_ns);
-		//Gpio_PinWrite(SWPWM_0_PORT,SWPWM_0_PIN,FALSE);
-		//Av_timer0Delay_ns(time_Off_ns);
-	//}
-//}
+/**
+ * Timers_timer0_SwPWM
+ * Description: Timers_timer0_SwPWM is a function to generate a software PWM on a GPIO pin 
+			the freq, port, and the pin of the output in the timers.h 
+ * @param dutyCycle : the duty cycle of the PWM in percentage
+ * @param freq : the frequency of the PWM in Hz
+ */
+void Timers_timer0_SwPWM(uint8 dutyCycle,uint64 freq)
+{
+	uint32 time_Total_ns = (SECONDS_TO_NANOSECONSD_FACTOR / freq);
+	uint32 time_On_ns  = ((dutyCycle/DUTY_CYCLE_PERCENTAGE_FACTOR) * time_Total_ns);
+	uint32 time_Off_ns = time_Total_ns - time_On_ns;
+	Gpio_PinDirection(SWPWM_0_PORT,SWPWM_0_PIN,SET_OUT);
+	while(TRUE)
+	{
+		Gpio_PinWrite(SWPWM_0_PORT,SWPWM_0_PIN,TRUE);
+		Timers_timer0_Delay_ns(time_On_ns);
+		Gpio_PinWrite(SWPWM_0_PORT,SWPWM_0_PIN,FALSE);
+		Timers_timer0_Delay_ns(time_Off_ns);
+	}
+}
 
 
 /*===========================Timer1 Control===============================*/
+
 /**
- * Description:
- * @param controlA
- * @param controlB
- * @param initialValue
- * @param outputCompare
- * @param interruptMask
+ * Description:						 This function is to initialize timer 1. 
+ * @param mode:						 The mode of the timer
+ * @param OC:						 Compare match pin status
+ * @param prescal:					 The prescaler of the timer
+ * @param initialValue:				 The initial Value to be set
+ * @param outputCompareLow:			 The low Reg set value
+ * @param outputCompareHigh:         The High Reg set value
+ * @param inputCapture:              The input Capture status
+ * @param interruptMask:             The interrupt status
  */
-void Av_timer1Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 initialValue, uint8 outputCompareLow, uint8 outputCompareHigh,uint16 inputCapture, T1_INTERRUPT interruptMask)
+void Timers_timer1_Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 initialValue, uint8 outputCompareLow, uint8 outputCompareHigh,uint16 inputCapture, T1_INTERRUPT interruptMask)
 {
 	OCR1AL = outputCompareLow;
 	OCR1AH = outputCompareHigh;
@@ -346,45 +439,47 @@ void Av_timer1Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 initialVa
 	TCNT1L = initialValue;
 	Gpio_PinDirection(MYPORTD,BIT5,SET_OUT);
 	TIMSK |= interruptMask;
-	prescaller1 = prescal;
+	Gv_PrescallerTimer1_Mask = prescal;
 	switch(prescal)
 	{
 		case  T1_NO_CLOCK :
-		preScaller_TIMER1= 0;
+		Gv_PrescallerTimer1_AbsoluteValue= 0;
 		break;
 		case  T1_PRESCALER_1 :
-		preScaller_TIMER1= 1;
+		Gv_PrescallerTimer1_AbsoluteValue= 1;
 		break;
 		case  T1_PRESCALER_8 :
-		preScaller_TIMER1= 8;
+		Gv_PrescallerTimer1_AbsoluteValue= 8;
 		break;
 		case  T1_PRESCALER_64 :
-		preScaller_TIMER1= 64;
+		Gv_PrescallerTimer1_AbsoluteValue= 64;
 		break;
 		case  T1_PRESCALER_256 :
-		preScaller_TIMER1= 256;
+		Gv_PrescallerTimer1_AbsoluteValue= 256;
 		break;
 		case  T1_PRESCALER_1024 :
-		preScaller_TIMER1= 1024;
+		Gv_PrescallerTimer1_AbsoluteValue= 1024;
 		break;
 	}
 		
 }
+
 /**
+ * Function : Timers_timer1_SetLowReg 
  * Description: set the Reg TCNT1L to a value
- * @param value the value to be set with no more than 255
+ * @param value the value to be set with no more than 256
  */
 
-void Av_timer1SetA(uint8 value)
+void Timers_timer1_SetLowReg(uint8 value)
 {
 	TCNT1L = value;
 }
 /**
  * Description: set the Reg TCNT1H to a value
- * @param value the value to be set with no more than 255
+ * @param value the value to be set with no more than 256
  */
 
-void Av_timer1SetB(uint8 value)
+void Timers_timer1_SetHighReg(uint8 value)
 {
 	TCNT1H = value;
 }
@@ -393,15 +488,15 @@ void Av_timer1SetB(uint8 value)
  * @return return the value
  */
 
-uint8 Av_timer1ReadA(void)
+uint8 Timers_timer1_ReadLowReg(void)
 {
-	return ((uint8) TCNT1L);
+	return TCNT1L;
 }
 /**
  * Description: read the value of the TCNT1H Register
  * @return return the value
  */
-uint8 Av_timer1ReadB(void)
+uint8 Timers_timer1_ReadHighReg(void)
 {
 	return TCNT1H;
 }
@@ -409,14 +504,14 @@ uint8 Av_timer1ReadB(void)
  * Description: start the counting from the moment of this function call
   * @param value the value to be set in the prescaller pins in the TCCR2 Reg
  */
-void Av_timer1Start(void)
+void Timers_timer1_Start(void)
 {
-	TCCR1B = (TCCR1B & 0xf8) | (0x05);
+	TCCR1B |= Gv_PrescallerTimer1_Mask;
 }
 /**
 * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
 */
-void Av_timer1Stop(void)
+void Timers_timer1_Stop(void)
 {
 	TCCR1B &= 0xf8;
 }
@@ -424,78 +519,57 @@ void Av_timer1Stop(void)
  * Description: Delay function pooling based to block the code for a specific amount of time
  * @param delay the time I want to delay in ms
  */
-void Av_timer1Delay_ms(uint16 delay)
+void Timers_timer1_Delay_ms(uint16 delay)
 {
-	volatile sint64 counter = (((sint64)delay) * F_CPU) / (65535 * preScaller_TIMER1 * 1000.0);
-	Av_timer1Start();
-	while(counter-- > 0)
+	volatile sint64 counter = (((sint64)delay) * Gv_F_CPU) / (TIMER1_MAX_COUNT * Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
+	Timers_timer1_Start();
+	while(counter--)
 	{
-		while( (TIFR & 0x04) == 0);
-		TIFR |= 0x04;
+		while( (TIFR & TIFR_TOV1_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV1_FLAG_MASK;
 	}
-	Av_timer1Stop();
+	Timers_timer1_Stop();
 }
-
-
 
 /**
  * Description: Delay function pooling based to block the code for a specific amount of time
  * @param delay the time I want to delay in ns
  */
-void Av_timer1Delay_ns(uint32 delay)
+void Timers_timer1_Delay_ns(uint32 delay)
 {
-	volatile sint64 counter = ((uint64) delay) * F_CPU / (256.0 * preScaller_TIMER1 * 1000000000.0);
-	Av_timer1Start();
-	while(counter-- > 0)
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER1_MAX_COUNT * Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	Timers_timer1_Start();
+	while(counter--)
 	{
-		while( (TIFR & 0x04) == 0);
-		TIFR |= 0x04;
+		while( (TIFR & TIFR_TOV1_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV1_FLAG_MASK;
 	}
-	Av_timer1Stop();
+	Timers_timer1_Stop();
 }
 
 /**
- * Description: Av_timer1SwPWM is a function to generate a software PWM on a GPIO pin 
+ * Description: Timers_timer1_SwPWM is a function to generate a software PWM on a GPIO pin 
 			the freq, port, and the pin of the output is configured in timers.h 
  * @param dutyCycle : the duty cycle of the PWM in percentage
  * @param freq : the frequency of the PWM in Hz
  */
-void Av_timer1SwPWM(uint8 dutyCycle,uint64 freq)
+void Timers_timer1_SwPWM(uint8 dutyCycle,uint64 freq)
 {
-	uint32 time_Total_ns = (1000000000 / freq);
-	uint32 time_On_ns  = ((dutyCycle/100.0) * time_Total_ns);
+	uint32 time_Total_ns = (SECONDS_TO_NANOSECONSD_FACTOR / freq);
+	uint32 time_On_ns  = ((dutyCycle/DUTY_CYCLE_PERCENTAGE_FACTOR) * time_Total_ns);
 	uint32 time_Off_ns = time_Total_ns - time_On_ns;
 	Gpio_PinDirection(SWPWM_1_PORT,SWPWM_1_PIN,SET_OUT);
 
-	while(1)
+	while(TRUE)
 	{
 		Gpio_PinWrite(SWPWM_1_PORT,SWPWM_1_PIN,TRUE);
-		Av_timer1Delay_ns(time_On_ns);
+		Timers_timer1_Delay_ns(time_On_ns);
 		Gpio_PinWrite(SWPWM_1_PORT,SWPWM_1_PIN,FALSE);
-		Av_timer1Delay_ns(time_Off_ns);
+		Timers_timer1_Delay_ns(time_Off_ns);
 	}	
 }
-
-/**
- * Description: PWM_PhaseCorrect_Init is a function to initiate a PWM on a GPIO pin OC1 
-			the freq, port, and the pin of the output are configured in the timers.h 
- * @param dutyCycle the duty cycle of the PWM in percentage
- * @param freq the frequency of the PWM in Hz
- */
-//void PWM_PhaseCorrect_Init(uint8 dutyCycle,uint8 freq)
-//{
-	//uint8 OCR_value;
-	//OCR_value = (uint8) (dutyCycle * 256 / 100);
-	//Gpio_PinDirection(MYPORTD,BIT5,SET_OUT);
-	////OCR1AL = 100;
-	////TCCR1A = 0x83;
-	////TCCR1B = 0x15;
-	//Av_timer1Init(T1_PWM_PhaseCorrect_ICR1_MODE,T1_OC1A_CLEAR,T1_PRESCALER_1,0,OCR_value,0,0,T1_POLLING);
-	//Av_timer1Start();
-//}
-
-
 /*===========================Timer2 Control===============================*/
+
 /**
  * Description: this function is to initialize the Timer2 
  * @mode  the mode of the timer
@@ -505,38 +579,38 @@ void Av_timer1SwPWM(uint8 dutyCycle,uint64 freq)
  * @param outputCompare the value to be set in the OCR0 Reg 
  * @param interruptMask Enable or disable the interrupts of the Timer
  */
-void Av_timer2Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T2_INTERRUPT interruptMask)
+void Timers_timer2_Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 initialValue, uint8 outputCompare, T2_INTERRUPT interruptMask)
 {
 	TCCR2 |= (mode|OC0);
 	TCNT2 = initialValue;
 	OCR2  = outputCompare;
 	TIMSK |= interruptMask;
-	prescaller2 = prescal;
+	Gv_PrescallerTimer2_Mask = prescal;
 		switch(prescal)
 		{
 			case T2_NO_CLOCK : 
-			preScaller_TIMER2= 0;
+			Gv_PrescallerTimer2_AbsoluteValue= 0;
 			break;	
 			case  T2_PRESCALER_1 :
-			preScaller_TIMER2= 1;
+			Gv_PrescallerTimer2_AbsoluteValue= 1;
 			break;
 			case  T2_PRESCALER_8 :
-			preScaller_TIMER2= 8;
+			Gv_PrescallerTimer2_AbsoluteValue= 8;
 			break;
 			case  T2_PRESCALER_32 :
-			preScaller_TIMER2= 32;
+			Gv_PrescallerTimer2_AbsoluteValue= 32;
 			break;
 			case  T2_PRESCALER_64 :
-			preScaller_TIMER2= 64;
+			Gv_PrescallerTimer2_AbsoluteValue= 64;
 			break;
 			case  T2_PRESCALER_128 :
-			preScaller_TIMER2= 128;
+			Gv_PrescallerTimer2_AbsoluteValue= 128;
 			break;
 			case  T2_PRESCALER_256 :
-			preScaller_TIMER2= 256;
+			Gv_PrescallerTimer2_AbsoluteValue= 256;
 			break;
 			case  T2_PRESCALER_1024 :
-			preScaller_TIMER2= 1024;
+			Gv_PrescallerTimer2_AbsoluteValue= 1024;
 			break;
 		}
 }
@@ -547,7 +621,7 @@ void Av_timer2Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 initialVa
  * @param value the value to be set with no more than 255
  */
 
-void Av_timer2Set(uint8 value)
+void Timers_timer2_Set(uint8 value)
 {
 	TCNT2 = value;
 }
@@ -558,7 +632,7 @@ void Av_timer2Set(uint8 value)
  * @return return the value
  */
 
-uint8 Av_timer2Read(void)
+uint8 Timers_timer2_Read(void)
 {
 	return TCNT2;
 }
@@ -567,15 +641,15 @@ uint8 Av_timer2Read(void)
  * Description: start the counting from the moment of this function call
   * @param value the value to be set in the prescaller pins in the TCCR2 Reg
  */
-void Av_timer2Start(void)
+void Timers_timer2_Start(void)
 {
-		TCCR2 |= prescaller2;
+		TCCR2 |= Gv_PrescallerTimer2_Mask;
 }
 
 /**
  * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
  */
-void Av_timer2Stop(void)
+void Timers_timer2_Stop(void)
 {
 	TCCR2 &= ~(0x07);
 }
@@ -584,16 +658,16 @@ void Av_timer2Stop(void)
  * Description: Delay function pooling based to block the code for a specific amount of time
  * @param delay the time I want to delay in ms
  */
-void Av_timer2Delay_ms(uint16 delay)
+void Timers_timer2_Delay_ms(uint16 delay)
 {
-	volatile sint64 counter = delay *(F_CPU / (256.0 * preScaller_TIMER2 * 1000.0));
-	Av_timer2Start();
-	while(counter-- > 0)
+	volatile sint64 counter = delay *(Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR));
+	Timers_timer2_Start();
+	while(counter--)
 	{
-		while( (TIFR & 0x40) == 0);
-		TIFR |= 0x40;
+		while( (TIFR & TIFR_TOV2_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV2_FLAG_MASK;
 	}
-	Av_timer2Stop();
+	Timers_timer2_Stop();
 }
 
 
@@ -601,50 +675,36 @@ void Av_timer2Delay_ms(uint16 delay)
  * Description: Delay function pooling based to block the code for a specific amount of time
  * @param delay the time I want to delay in ns
  */
-void Av_timer2Delay_ns(uint32 delay)
+void Timers_timer2_Delay_ns(uint32 delay)
 {
-	volatile sint64 counter = ((uint64) delay) * F_CPU / (256.0 * preScaller_TIMER2 * 1000000000.0);
-	Av_timer2Start();
-	while(counter-- > 0)
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	Timers_timer2_Start();
+	while(counter--)
 	{
-		while( (TIFR & 0x40) == 0);
-		TIFR |= 0x40;
+		while( (TIFR & TIFR_TOV2_FLAG_MASK) == FALSE);
+		TIFR |= TIFR_TOV2_FLAG_MASK;
 	}
-	Av_timer2Stop();
+	Timers_timer2_Stop();
 }
 
 /**
- * Description: Av_timer2SwPWM is a function to generate a software PWM on a GPIO pin 
+ * Description: Timers_timer2_SwPWM is a function to generate a software PWM on a GPIO pin 
 			the freq, port, and the pin of the output in the timers.h 
  * @param dutyCycle : the duty cycle of the PWM in percentage
  */
-void Av_timer2SwPWM(uint8 dutyCycle,uint64 freq)
+void Timers_timer2_SwPWM(uint8 dutyCycle,uint64 freq)
 {
-	uint32 time_Total_ns = (1000000000 / freq);
-	uint32 time_On_ns  = ((dutyCycle/100.0) * time_Total_ns);
+	uint32 time_Total_ns = (SECONDS_TO_NANOSECONSD_FACTOR / freq);
+	uint32 time_On_ns  = ((dutyCycle/DUTY_CYCLE_PERCENTAGE_FACTOR) * time_Total_ns);
 	uint32 time_Off_ns = time_Total_ns - time_On_ns;
 	
 	
 	Gpio_PinDirection(SWPWM_2_PORT,SWPWM_2_PIN,SET_OUT);
-	while(1)
+	while(TRUE)
 	{
 		Gpio_PinWrite(SWPWM_2_PORT,SWPWM_2_PIN,TRUE);
-		Av_timer2Delay_ns(time_On_ns);
+		Timers_timer2_Delay_ns(time_On_ns);
 		Gpio_PinWrite(SWPWM_2_PORT,SWPWM_2_PIN,FALSE);
-		Av_timer2Delay_ns(time_Off_ns);
+		Timers_timer2_Delay_ns(time_Off_ns);
 	}
-}
-
-
-
-void Av_timer1PWM( uint8 dutycycle , uint16 freq){
-	// in ms
-	uint16 TOP_Value;
-	uint16 Compare_Value;
-	TOP_Value = (F_CPU/(2*freq*1024));
-	Compare_Value = (TOP_Value*dutycycle)/100;
-	ICR1L  = (uint8)(TOP_Value);
-	ICR1H  = (uint8)(TOP_Value>>8);
-	OCR1AL = (uint8)(Compare_Value);
-	OCR1AH = (uint8)(Compare_Value>>8);
 }

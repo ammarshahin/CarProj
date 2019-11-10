@@ -1,14 +1,20 @@
 /*
- * Timers_LCFG.h
- *
- * Created: 11/4/2019 2:04:00 PM
+ * Timers_PCFG.c
+ * Description : This File is used to control the Timer Peripherals in the MCAL layer
+ * Created: 10/22/2019 2:04:16 PM
  *  Author: Ammar Shahin
  */ 
 #ifndef  _Timers_LCFG_H
 #define  _Timers_LCFG_H
 
+/************************************************************************/
+/*                            Files Includes                            */
+/************************************************************************/
 #include "Typedefs.h"
 
+/************************************************************************/
+/*                               Macros                                 */
+/************************************************************************/
 #define TIMER0  0
 #define TIMER1  1
 #define TIMER2  2
@@ -19,6 +25,10 @@
 #define INTERRUPT     1
 #define POLLING       0
 
+
+/************************************************************************/
+/*                          Linking Structure                            */
+/************************************************************************/
 typedef struct Timers_CFG_S{
 	uint8  ch_no;
 	uint8  Timers_Mode;
@@ -27,6 +37,11 @@ typedef struct Timers_CFG_S{
 	uint32 CPU_CLK;
 }Timers_CFG_S;
 
-extern Timers_CFG_S cfg_s;
+/************************************************************************/
+/*                       Extern Global variables                        */
+/************************************************************************/
+extern Timers_CFG_S timer0_cfg_s;
+extern Timers_CFG_S timer1_cfg_s;
+extern Timers_CFG_S timer2_cfg_s;
 
 #endif /* _Timers_LCFG_H */

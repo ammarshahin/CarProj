@@ -17,6 +17,17 @@
 
 
 /************************************************************************/
+/*                         Macros and Defines                           */
+/************************************************************************/
+#define SLOW_SPEED 30
+#define FAST_SPEED 100
+#define NORMAL_SPEED 50
+
+#define DELAY_TIME_MS 100
+
+#define CAUTIOUS_DISTANCE 60
+#define DENGEROUS_DISTANCE 30
+/************************************************************************/
 /*                        Functions Definitions                         */
 /************************************************************************/
 
@@ -45,21 +56,21 @@ void Car_Action(void)
 	Ultrasonic_Trigger();	
 	uint8 distance = Ultrasonic_CalculateDistance();
 	
-	if(distance > 60) /* No obstacle Go Forward */
+	if(distance > CAUTIOUS_DISTANCE) /* No obstacle Go Forward */
 	{
 		Move_Forward();
-		DC_Motor_Set_Speed(95);
+		DC_Motor_Set_Speed(FAST_SPEED);
 	}
-	else if ( (distance < 60) && (distance > 30) )  /* Obstacle on the near range */
+	else if ( (distance < CAUTIOUS_DISTANCE) && (distance > DENGEROUS_DISTANCE) )  /* Obstacle on the near range */
 	{
 		Move_RotateRight();
-		DC_Motor_Set_Speed(50);
-		SwDelay_ms(100);
+		DC_Motor_Set_Speed(NORMAL_SPEED);
+		SwDelay_ms(DELAY_TIME_MS);
 	}
-	else if(distance < 30)  /* Obstacle is very near go back till an enough range to rotate */
+	else if(distance < DENGEROUS_DISTANCE)  /* Obstacle is very near go back till an enough range to rotate */
 	{
-		DC_Motor_Set_Speed(30);
+		DC_Motor_Set_Speed(SLOW_SPEED);
 		Move_Backward();
-		SwDelay_ms(100);
+		SwDelay_ms(DELAY_TIME_MS);
 	}
 }

@@ -11,6 +11,7 @@
 #include "Typedefs.h"
 #include "Gpio.h"
 #include "Timers.h"
+#include "PWM.h"
 #include "DC_Motor_cfg.h"
 #include "DC_Motor.h"
 
@@ -18,7 +19,8 @@
 /************************************************************************/
 /*				          Data Types and Defines                        */
 /************************************************************************/
-#define MOTOR_FREQUENCY_IN_HZ 500
+#define MOTOR_FREQUENCY_IN_HZ 20
+#define DEFAULT_SPEED    50
 
 /**
  * Function : DC_Motor_Init
@@ -28,7 +30,9 @@
  */
 void DC_Motor_Init(uint8 Channel)
 {
-	Av_timer1Init(T1_PWM_PhaseCorrect_ICR1_MODE,T1_OC1A_CLEAR,T1_PRESCALER_1024,0,0,0,0,T1_POLLING);
+	//Timers_timer1_Init(T1_PWM_PhaseCorrect_ICR1_MODE,T1_OC1A_CLEAR,T1_PRESCALER_1024,0,0,0,0,T1_POLLING);
+	//Timers_Init(&timer1_cfg_s);
+	PWM_Init(TIMER1);
 	switch(Channel)
 	{
 		case DC_MOTOR_CHANNEL_0 : 
@@ -64,7 +68,7 @@ uint8 DC_Motor_Set_Speed(uint8 Speed)
 {
 	if(Speed <= 100)
 	{
-		Av_timer1PWM(Speed,MOTOR_FREQUENCY_IN_HZ);
+		PWM_PhaseCorrect(Speed,MOTOR_FREQUENCY_IN_HZ);
 		return OK;
 	}
 	else
@@ -153,7 +157,7 @@ void DC_Motor_Stop(uint8 Channel)
  */
 void DC_Motor_Start(uint8 Channel)
 {
-	DC_Motor_Set_Speed(50); // 50 As a default speed
-	Av_timer1Start();
+	DC_Motor_Set_Speed(DEFAULT_SPEED);
+	Timers_timer1_Start();
 	DC_Motor_Set_Direction(Channel,DC_MOTOR_FORWARD); // Move Forward as A default Direction
 }

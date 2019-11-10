@@ -17,4 +17,10 @@
  */
 void SwDelay_ms(uint32 NoOfMilleSeconds);
 
+/**
+ * Description: Function to make a software Delay in the Micro Seconds. 
+ * @param NoOfMicroeSeconds the number of Microe Seconds to delay
+ */
+void SwDelay_us(uint32 NoOfMicroeSeconds);
+
 #endif /* SOFTWAREDELAY_H_ */

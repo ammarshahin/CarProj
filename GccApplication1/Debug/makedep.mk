@@ -20,6 +20,8 @@ MCAL\Gpio\src\Gpio.c
 
 MCAL\Interrupts\src\Interrupts.c
 
+MCAL\PWM\src\PWM.c
+
 MCAL\Timers\inc\Timers_Lcfg.c
 
 MCAL\Timers\src\Timers.c
