@@ -23,11 +23,11 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING
   9 .debug_frame  000008a4  00000000  00000000  000069b0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000011b5  00000000  00000000  00007254  2**0
+ 10 .debug_str    000011af  00000000  00000000  00007254  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    00002252  00000000  00000000  00008409  2**0
+ 11 .debug_loc    00002252  00000000  00000000  00008403  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 000002c0  00000000  00000000  0000a65b  2**0
+ 12 .debug_ranges 000002c0  00000000  00000000  0000a655  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -833,9 +833,9 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  620:	c8 2f       	mov	r28, r24
 	uint16 TOP_Value;
 	uint16 Compare_Value;
-	TOP_Value = F_CPU / ( 2 * freq * Gv_PrescallerTimer1_AbsoluteValue);
- 622:	80 91 91 00 	lds	r24, 0x0091	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
- 626:	90 91 92 00 	lds	r25, 0x0092	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
+	TOP_Value = F_CPU / ( 2 * freq * Gv_PrescalerTimer1_AbsoluteValue);
+ 622:	80 91 8d 00 	lds	r24, 0x008D	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
+ 626:	90 91 8e 00 	lds	r25, 0x008E	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
  62a:	88 0f       	add	r24, r24
  62c:	99 1f       	adc	r25, r25
  62e:	86 9f       	mul	r24, r22
@@ -885,7 +885,7 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
 0000067e <Timers_SetCounter>:
 			break;
 			case  T2_PRESCALER_1024 :
-			Gv_PrescallerTimer2_AbsoluteValue= 1024;
+			Gv_PrescalerTimer2_AbsoluteValue= 1024;
 			break;
 		}
 }
@@ -904,8 +904,8 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  696:	09 f4       	brne	.+2      	; 0x69a <Timers_SetCounter+0x1c>
  698:	5b c0       	rjmp	.+182    	; 0x750 <Timers_SetCounter+0xd2>
  69a:	85 c0       	rjmp	.+266    	; 0x7a6 <Timers_SetCounter+0x128>
- 69c:	a0 91 8f 00 	lds	r26, 0x008F	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
- 6a0:	b0 91 90 00 	lds	r27, 0x0090	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
+ 69c:	a0 91 91 00 	lds	r26, 0x0091	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
+ 6a0:	b0 91 92 00 	lds	r27, 0x0092	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
  6a4:	80 90 89 00 	lds	r8, 0x0089	; 0x800089 <Gv_F_CPU>
  6a8:	90 90 8a 00 	lds	r9, 0x008A	; 0x80008a <Gv_F_CPU+0x1>
  6ac:	a0 90 8b 00 	lds	r10, 0x008B	; 0x80008b <Gv_F_CPU+0x2>
@@ -937,8 +937,8 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  6ee:	82 bf       	out	0x32, r24	; 50
  6f0:	81 e0       	ldi	r24, 0x01	; 1
  6f2:	60 c0       	rjmp	.+192    	; 0x7b4 <Timers_SetCounter+0x136>
- 6f4:	a0 91 91 00 	lds	r26, 0x0091	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
- 6f8:	b0 91 92 00 	lds	r27, 0x0092	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
+ 6f4:	a0 91 8d 00 	lds	r26, 0x008D	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
+ 6f8:	b0 91 8e 00 	lds	r27, 0x008E	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
  6fc:	80 90 89 00 	lds	r8, 0x0089	; 0x800089 <Gv_F_CPU>
  700:	90 90 8a 00 	lds	r9, 0x008A	; 0x80008a <Gv_F_CPU+0x1>
  704:	a0 90 8b 00 	lds	r10, 0x008B	; 0x80008b <Gv_F_CPU+0x2>
@@ -971,8 +971,8 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  74a:	1d bc       	out	0x2d, r1	; 45
  74c:	81 e0       	ldi	r24, 0x01	; 1
  74e:	32 c0       	rjmp	.+100    	; 0x7b4 <Timers_SetCounter+0x136>
- 750:	a0 91 8d 00 	lds	r26, 0x008D	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
- 754:	b0 91 8e 00 	lds	r27, 0x008E	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
+ 750:	a0 91 8f 00 	lds	r26, 0x008F	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
+ 754:	b0 91 90 00 	lds	r27, 0x0090	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
  758:	80 90 89 00 	lds	r8, 0x0089	; 0x800089 <Gv_F_CPU>
  75c:	90 90 8a 00 	lds	r9, 0x008A	; 0x80008a <Gv_F_CPU+0x1>
  760:	a0 90 8b 00 	lds	r10, 0x008B	; 0x80008b <Gv_F_CPU+0x2>
@@ -1050,7 +1050,7 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  802:	8c 81       	ldd	r24, Y+4	; 0x04
  804:	89 2b       	or	r24, r25
  806:	89 bf       	out	0x39, r24	; 57
- 808:	80 91 7d 00 	lds	r24, 0x007D	; 0x80007d <Gv_PrescallerTimer0_Mask>
+ 808:	80 91 7d 00 	lds	r24, 0x007D	; 0x80007d <Gv_PrescalerTimer0_Mask>
  80c:	82 30       	cpi	r24, 0x02	; 2
  80e:	d1 f0       	breq	.+52     	; 0x844 <Timers_Init+0x7e>
  810:	28 f4       	brcc	.+10     	; 0x81c <Timers_Init+0x56>
@@ -1065,38 +1065,38 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  822:	85 30       	cpi	r24, 0x05	; 5
  824:	39 f1       	breq	.+78     	; 0x874 <__stack+0x15>
  826:	c7 c0       	rjmp	.+398    	; 0x9b6 <__stack+0x157>
- 828:	10 92 90 00 	sts	0x0090, r1	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 82c:	10 92 8f 00 	sts	0x008F, r1	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 828:	10 92 92 00 	sts	0x0092, r1	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 82c:	10 92 91 00 	sts	0x0091, r1	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  830:	11 e0       	ldi	r17, 0x01	; 1
  832:	c6 c0       	rjmp	.+396    	; 0x9c0 <__stack+0x161>
  834:	81 e0       	ldi	r24, 0x01	; 1
  836:	90 e0       	ldi	r25, 0x00	; 0
- 838:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 83c:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 838:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 83c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  840:	11 e0       	ldi	r17, 0x01	; 1
  842:	be c0       	rjmp	.+380    	; 0x9c0 <__stack+0x161>
  844:	88 e0       	ldi	r24, 0x08	; 8
  846:	90 e0       	ldi	r25, 0x00	; 0
- 848:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 84c:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 848:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 84c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  850:	11 e0       	ldi	r17, 0x01	; 1
  852:	b6 c0       	rjmp	.+364    	; 0x9c0 <__stack+0x161>
  854:	80 e4       	ldi	r24, 0x40	; 64
  856:	90 e0       	ldi	r25, 0x00	; 0
- 858:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 85c:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 858:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 85c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  860:	11 e0       	ldi	r17, 0x01	; 1
  862:	ae c0       	rjmp	.+348    	; 0x9c0 <__stack+0x161>
  864:	80 e0       	ldi	r24, 0x00	; 0
  866:	91 e0       	ldi	r25, 0x01	; 1
- 868:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 86c:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 868:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 86c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  870:	11 e0       	ldi	r17, 0x01	; 1
  872:	a6 c0       	rjmp	.+332    	; 0x9c0 <__stack+0x161>
  874:	80 e0       	ldi	r24, 0x00	; 0
  876:	94 e0       	ldi	r25, 0x04	; 4
- 878:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescallerTimer0_AbsoluteValue+0x1>
- 87c:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescallerTimer0_AbsoluteValue>
+ 878:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescalerTimer0_AbsoluteValue+0x1>
+ 87c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescalerTimer0_AbsoluteValue>
  880:	11 e0       	ldi	r17, 0x01	; 1
  882:	9e c0       	rjmp	.+316    	; 0x9c0 <__stack+0x161>
  884:	9f b5       	in	r25, 0x2f	; 47
@@ -1116,7 +1116,7 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  8a0:	60 e2       	ldi	r22, 0x20	; 32
  8a2:	83 e0       	ldi	r24, 0x03	; 3
  8a4:	0e 94 12 02 	call	0x424	; 0x424 <Gpio_PinDirection>
- 8a8:	80 91 7c 00 	lds	r24, 0x007C	; 0x80007c <Gv_PrescallerTimer1_Mask>
+ 8a8:	80 91 7c 00 	lds	r24, 0x007C	; 0x80007c <Gv_PrescalerTimer1_Mask>
  8ac:	82 30       	cpi	r24, 0x02	; 2
  8ae:	d1 f0       	breq	.+52     	; 0x8e4 <__stack+0x85>
  8b0:	28 f4       	brcc	.+10     	; 0x8bc <__stack+0x5d>
@@ -1131,38 +1131,38 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  8c2:	85 30       	cpi	r24, 0x05	; 5
  8c4:	39 f1       	breq	.+78     	; 0x914 <__stack+0xb5>
  8c6:	79 c0       	rjmp	.+242    	; 0x9ba <__stack+0x15b>
- 8c8:	10 92 92 00 	sts	0x0092, r1	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 8cc:	10 92 91 00 	sts	0x0091, r1	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 8c8:	10 92 8e 00 	sts	0x008E, r1	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 8cc:	10 92 8d 00 	sts	0x008D, r1	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  8d0:	11 e0       	ldi	r17, 0x01	; 1
  8d2:	76 c0       	rjmp	.+236    	; 0x9c0 <__stack+0x161>
  8d4:	81 e0       	ldi	r24, 0x01	; 1
  8d6:	90 e0       	ldi	r25, 0x00	; 0
- 8d8:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 8dc:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 8d8:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 8dc:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  8e0:	11 e0       	ldi	r17, 0x01	; 1
  8e2:	6e c0       	rjmp	.+220    	; 0x9c0 <__stack+0x161>
  8e4:	88 e0       	ldi	r24, 0x08	; 8
  8e6:	90 e0       	ldi	r25, 0x00	; 0
- 8e8:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 8ec:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 8e8:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 8ec:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  8f0:	11 e0       	ldi	r17, 0x01	; 1
  8f2:	66 c0       	rjmp	.+204    	; 0x9c0 <__stack+0x161>
  8f4:	80 e4       	ldi	r24, 0x40	; 64
  8f6:	90 e0       	ldi	r25, 0x00	; 0
- 8f8:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 8fc:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 8f8:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 8fc:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  900:	11 e0       	ldi	r17, 0x01	; 1
  902:	5e c0       	rjmp	.+188    	; 0x9c0 <__stack+0x161>
  904:	80 e0       	ldi	r24, 0x00	; 0
  906:	91 e0       	ldi	r25, 0x01	; 1
- 908:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 90c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 908:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 90c:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  910:	11 e0       	ldi	r17, 0x01	; 1
  912:	56 c0       	rjmp	.+172    	; 0x9c0 <__stack+0x161>
  914:	80 e0       	ldi	r24, 0x00	; 0
  916:	94 e0       	ldi	r25, 0x04	; 4
- 918:	90 93 92 00 	sts	0x0092, r25	; 0x800092 <Gv_PrescallerTimer1_AbsoluteValue+0x1>
- 91c:	80 93 91 00 	sts	0x0091, r24	; 0x800091 <Gv_PrescallerTimer1_AbsoluteValue>
+ 918:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescalerTimer1_AbsoluteValue+0x1>
+ 91c:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescalerTimer1_AbsoluteValue>
  920:	11 e0       	ldi	r17, 0x01	; 1
  922:	4e c0       	rjmp	.+156    	; 0x9c0 <__stack+0x161>
  924:	95 b5       	in	r25, 0x25	; 37
@@ -1173,7 +1173,7 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  92e:	8c 81       	ldd	r24, Y+4	; 0x04
  930:	89 2b       	or	r24, r25
  932:	89 bf       	out	0x39, r24	; 57
- 934:	80 91 7b 00 	lds	r24, 0x007B	; 0x80007b <Gv_PrescallerTimer2_Mask>
+ 934:	80 91 7b 00 	lds	r24, 0x007B	; 0x80007b <Gv_PrescalerTimer2_Mask>
  938:	82 30       	cpi	r24, 0x02	; 2
  93a:	d9 f0       	breq	.+54     	; 0x972 <__stack+0x113>
  93c:	28 f4       	brcc	.+10     	; 0x948 <__stack+0xe9>
@@ -1189,38 +1189,38 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  950:	84 30       	cpi	r24, 0x04	; 4
  952:	a9 f5       	brne	.+106    	; 0x9be <__stack+0x15f>
  954:	16 c0       	rjmp	.+44     	; 0x982 <__stack+0x123>
- 956:	10 92 8e 00 	sts	0x008E, r1	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 95a:	10 92 8d 00 	sts	0x008D, r1	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 956:	10 92 90 00 	sts	0x0090, r1	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 95a:	10 92 8f 00 	sts	0x008F, r1	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  95e:	11 e0       	ldi	r17, 0x01	; 1
  960:	2f c0       	rjmp	.+94     	; 0x9c0 <__stack+0x161>
  962:	81 e0       	ldi	r24, 0x01	; 1
  964:	90 e0       	ldi	r25, 0x00	; 0
- 966:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 96a:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 966:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 96a:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  96e:	11 e0       	ldi	r17, 0x01	; 1
  970:	27 c0       	rjmp	.+78     	; 0x9c0 <__stack+0x161>
  972:	88 e0       	ldi	r24, 0x08	; 8
  974:	90 e0       	ldi	r25, 0x00	; 0
- 976:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 97a:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 976:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 97a:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  97e:	11 e0       	ldi	r17, 0x01	; 1
  980:	1f c0       	rjmp	.+62     	; 0x9c0 <__stack+0x161>
  982:	80 e4       	ldi	r24, 0x40	; 64
  984:	90 e0       	ldi	r25, 0x00	; 0
- 986:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 98a:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 986:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 98a:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  98e:	11 e0       	ldi	r17, 0x01	; 1
  990:	17 c0       	rjmp	.+46     	; 0x9c0 <__stack+0x161>
  992:	80 e0       	ldi	r24, 0x00	; 0
  994:	91 e0       	ldi	r25, 0x01	; 1
- 996:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 99a:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 996:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 99a:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  99e:	11 e0       	ldi	r17, 0x01	; 1
  9a0:	0f c0       	rjmp	.+30     	; 0x9c0 <__stack+0x161>
  9a2:	80 e0       	ldi	r24, 0x00	; 0
  9a4:	94 e0       	ldi	r25, 0x04	; 4
- 9a6:	90 93 8e 00 	sts	0x008E, r25	; 0x80008e <Gv_PrescallerTimer2_AbsoluteValue+0x1>
- 9aa:	80 93 8d 00 	sts	0x008D, r24	; 0x80008d <Gv_PrescallerTimer2_AbsoluteValue>
+ 9a6:	90 93 90 00 	sts	0x0090, r25	; 0x800090 <Gv_PrescalerTimer2_AbsoluteValue+0x1>
+ 9aa:	80 93 8f 00 	sts	0x008F, r24	; 0x80008f <Gv_PrescalerTimer2_AbsoluteValue>
  9ae:	11 e0       	ldi	r17, 0x01	; 1
  9b0:	07 c0       	rjmp	.+14     	; 0x9c0 <__stack+0x161>
  9b2:	10 e0       	ldi	r17, 0x00	; 0
@@ -1263,17 +1263,17 @@ void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
  9f6:	82 30       	cpi	r24, 0x02	; 2
  9f8:	69 f0       	breq	.+26     	; 0xa14 <Timers_Start+0x24>
  9fa:	11 c0       	rjmp	.+34     	; 0xa1e <Timers_Start+0x2e>
- 9fc:	90 91 7d 00 	lds	r25, 0x007D	; 0x80007d <Gv_PrescallerTimer0_Mask>
+ 9fc:	90 91 7d 00 	lds	r25, 0x007D	; 0x80007d <Gv_PrescalerTimer0_Mask>
  a00:	83 b7       	in	r24, 0x33	; 51
  a02:	89 2b       	or	r24, r25
  a04:	83 bf       	out	0x33, r24	; 51
  a06:	0b c0       	rjmp	.+22     	; 0xa1e <Timers_Start+0x2e>
- a08:	90 91 7c 00 	lds	r25, 0x007C	; 0x80007c <Gv_PrescallerTimer1_Mask>
+ a08:	90 91 7c 00 	lds	r25, 0x007C	; 0x80007c <Gv_PrescalerTimer1_Mask>
  a0c:	8e b5       	in	r24, 0x2e	; 46
  a0e:	89 2b       	or	r24, r25
  a10:	8e bd       	out	0x2e, r24	; 46
  a12:	05 c0       	rjmp	.+10     	; 0xa1e <Timers_Start+0x2e>
- a14:	90 91 7b 00 	lds	r25, 0x007B	; 0x80007b <Gv_PrescallerTimer2_Mask>
+ a14:	90 91 7b 00 	lds	r25, 0x007B	; 0x80007b <Gv_PrescalerTimer2_Mask>
  a18:	85 b5       	in	r24, 0x25	; 37
  a1a:	89 2b       	or	r24, r25
  a1c:	85 bd       	out	0x25, r24	; 37

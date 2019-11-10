@@ -17,15 +17,15 @@
 /*                          Global Variables                            */
 /************************************************************************/
 
-/* Global variables for the absolute value of the prescaller */
-volatile uint16 Gv_PrescallerTimer0_AbsoluteValue;
-volatile uint16 Gv_PrescallerTimer1_AbsoluteValue;
-volatile uint16 Gv_PrescallerTimer2_AbsoluteValue;
+/* Global variables for the absolute value of the prescaler */
+volatile uint16 Gv_PrescalerTimer0_AbsoluteValue;
+volatile uint16 Gv_PrescalerTimer1_AbsoluteValue;
+volatile uint16 Gv_PrescalerTimer2_AbsoluteValue;
 
 /* Global variables for the Mask value of the prescaler (values set as default) */
-volatile uint8 Gv_PrescallerTimer0_Mask = T0_PRESCALER_1;
-volatile uint8 Gv_PrescallerTimer1_Mask = T1_PRESCALER_1024;
-volatile uint8 Gv_PrescallerTimer2_Mask = T2_PRESCALER_1;
+volatile uint8 Gv_PrescalerTimer0_Mask = T0_PRESCALER_1;
+volatile uint8 Gv_PrescalerTimer1_Mask = T1_PRESCALER_1024;
+volatile uint8 Gv_PrescalerTimer2_Mask = T2_PRESCALER_1;
 
 static volatile uint32 Gv_F_CPU;
 static volatile uint8  Gv_Count;
@@ -53,25 +53,25 @@ uint8 Timers_Init(Timers_CFG_S* cfg_s)
 			case TIMER0:
 			TCCR0 |= cfg_s->Timers_Mode;
 			TIMSK |= cfg_s->Timers_Interrupt;
-			switch(Gv_PrescallerTimer0_Mask)
+			switch(Gv_PrescalerTimer0_Mask)
 			{
 				case T0_NO_CLOCK :
-				Gv_PrescallerTimer0_AbsoluteValue = 0;
+				Gv_PrescalerTimer0_AbsoluteValue = 0;
 				break;
 				case  T0_PRESCALER_1 :
-				Gv_PrescallerTimer0_AbsoluteValue = 1;
+				Gv_PrescalerTimer0_AbsoluteValue = 1;
 				break;
 				case  T0_PRESCALER_8 :
-				Gv_PrescallerTimer0_AbsoluteValue = 8;
+				Gv_PrescalerTimer0_AbsoluteValue = 8;
 				break;
 				case  T0_PRESCALER_64 :
-				Gv_PrescallerTimer0_AbsoluteValue = 64;
+				Gv_PrescalerTimer0_AbsoluteValue = 64;
 				break;
 				case  T0_PRESCALER_256 :
-				Gv_PrescallerTimer0_AbsoluteValue = 256;
+				Gv_PrescalerTimer0_AbsoluteValue = 256;
 				break;
 				case  T0_PRESCALER_1024 :
-				Gv_PrescallerTimer0_AbsoluteValue = 1024;
+				Gv_PrescalerTimer0_AbsoluteValue = 1024;
 				break;
 			}
 			cfg_Result = OK;
@@ -82,25 +82,25 @@ uint8 Timers_Init(Timers_CFG_S* cfg_s)
 			TCCR1B |= (cfg_s->Timers_Mode & 0x18);
 			TCCR1A |= T1_OC1A_CLEAR;
 			Gpio_PinDirection(MYPORTD,BIT5,SET_OUT);
-			switch(Gv_PrescallerTimer1_Mask)
+			switch(Gv_PrescalerTimer1_Mask)
 			{
 				case T1_NO_CLOCK :
-				Gv_PrescallerTimer1_AbsoluteValue = 0;
+				Gv_PrescalerTimer1_AbsoluteValue = 0;
 				break;
 				case  T1_PRESCALER_1 :
-				Gv_PrescallerTimer1_AbsoluteValue = 1;
+				Gv_PrescalerTimer1_AbsoluteValue = 1;
 				break;
 				case  T1_PRESCALER_8 :
-				Gv_PrescallerTimer1_AbsoluteValue = 8;
+				Gv_PrescalerTimer1_AbsoluteValue = 8;
 				break;
 				case  T1_PRESCALER_64 :
-				Gv_PrescallerTimer1_AbsoluteValue = 64;
+				Gv_PrescalerTimer1_AbsoluteValue = 64;
 				break;
 				case  T1_PRESCALER_256 :
-				Gv_PrescallerTimer1_AbsoluteValue = 256;
+				Gv_PrescalerTimer1_AbsoluteValue = 256;
 				break;
 				case  T1_PRESCALER_1024 :
-				Gv_PrescallerTimer1_AbsoluteValue = 1024;
+				Gv_PrescalerTimer1_AbsoluteValue = 1024;
 				break;
 			}
 			cfg_Result = OK;
@@ -109,25 +109,25 @@ uint8 Timers_Init(Timers_CFG_S* cfg_s)
 			case TIMER2:	
 			TCCR2 |= cfg_s->Timers_Mode;
 			TIMSK |= cfg_s->Timers_Interrupt;
-			switch(Gv_PrescallerTimer2_Mask)
+			switch(Gv_PrescalerTimer2_Mask)
 			{
 				case T2_NO_CLOCK :
-				Gv_PrescallerTimer2_AbsoluteValue = 0;
+				Gv_PrescalerTimer2_AbsoluteValue = 0;
 				break;
 				case  T2_PRESCALER_1 :
-				Gv_PrescallerTimer2_AbsoluteValue = 1;
+				Gv_PrescalerTimer2_AbsoluteValue = 1;
 				break;
 				case  T2_PRESCALER_8 :
-				Gv_PrescallerTimer2_AbsoluteValue = 8;
+				Gv_PrescalerTimer2_AbsoluteValue = 8;
 				break;
 				case  T2_PRESCALER_64 :
-				Gv_PrescallerTimer2_AbsoluteValue = 64;
+				Gv_PrescalerTimer2_AbsoluteValue = 64;
 				break;
 				case  T2_PRESCALER_256 :
-				Gv_PrescallerTimer2_AbsoluteValue = 256;
+				Gv_PrescalerTimer2_AbsoluteValue = 256;
 				break;
 				case  T2_PRESCALER_1024 :
-				Gv_PrescallerTimer2_AbsoluteValue = 1024;
+				Gv_PrescalerTimer2_AbsoluteValue = 1024;
 				break;
 			}
 			cfg_Result = OK;
@@ -157,7 +157,7 @@ uint8 Timers_SetCounter(uint8 ch_no,uint16 count)
 	switch (ch_no)
 	{
 	case TIMER0:
-		no_Of_Counts = ( count / ( Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		no_Of_Counts = ( count / ( Gv_PrescalerTimer0_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
 		if(no_Of_Counts > TIMER0_MAX_COUNT)
 		{
 			cfg_Result = NOT_OK;
@@ -171,7 +171,7 @@ uint8 Timers_SetCounter(uint8 ch_no,uint16 count)
 		break;
 		
 	case TIMER1:
-		no_Of_Counts = ( count / ( Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		no_Of_Counts = ( count / ( Gv_PrescalerTimer1_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
 		if(no_Of_Counts > TIMER1_MAX_COUNT)
 		{
 			cfg_Result = NOT_OK;
@@ -186,7 +186,7 @@ uint8 Timers_SetCounter(uint8 ch_no,uint16 count)
 	break;
 	
 	case TIMER2:
-		no_Of_Counts = ( count / ( Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
+		no_Of_Counts = ( count / ( Gv_PrescalerTimer2_AbsoluteValue * SECONDS_TO_MICROSECONSD_FACTOR / Gv_F_CPU) );
 		if(no_Of_Counts > TIMER2_MAX_COUNT)
 		{
 			cfg_Result = NOT_OK;
@@ -247,13 +247,13 @@ uint8 Timers_Start(uint8 ch_no)
 	switch (ch_no)
 	{
 	case TIMER0:
-		TCCR0 |= Gv_PrescallerTimer0_Mask;
+		TCCR0 |= Gv_PrescalerTimer0_Mask;
 		break;
 	case TIMER1:
-		TCCR1B |= Gv_PrescallerTimer1_Mask;
+		TCCR1B |= Gv_PrescalerTimer1_Mask;
 		break;
 	case TIMER2:
-		TCCR2 |= Gv_PrescallerTimer2_Mask;
+		TCCR2 |= Gv_PrescalerTimer2_Mask;
 		break;
 	default:
 		break;
@@ -285,7 +285,7 @@ uint8 Timers_Stop(uint8 ch_no)
 	default:
 		break;
 	}
-	return 1;
+	return OK;
 }
 
 
@@ -311,7 +311,7 @@ uint32 Timers_Read(uint8 ch_no)
 	default:
 		break;
 	}
-	return 0;
+	return NOT_OK;
 }
 
 /*===========================Timer0 Control===============================*/
@@ -319,7 +319,7 @@ uint32 Timers_Read(uint8 ch_no)
 /**
  * Function : Timers_timer0_Init
  * Description: this function is to initialize the Timer0 
- * @param control the control Reg value which include the mode and the Gv_PrescallerTimer0_AbsoluteValue
+ * @param control the control Reg value which include the mode and the Gv_PrescalerTimer0_AbsoluteValue
  * @param initialValue the initial value to be set in the TCNT0 Reg
  * @param outputCompare the value to be set in the OCR0 Reg 
  * @param interruptMask Enable or disable the interrupts of the Timer
@@ -330,26 +330,26 @@ void Timers_timer0_Init(T0_MODE mode,T0_COM OC0,T0_PRESCALER prescal, uint8 init
 	TCNT0 = initialValue;
 	OCR0  = outputCompare;
 	TIMSK |= interruptMask;
-	Gv_PrescallerTimer0_Mask = prescal;
+	Gv_PrescalerTimer0_Mask = prescal;
 		switch(prescal)
 		{
 			case T0_NO_CLOCK :
-			Gv_PrescallerTimer0_AbsoluteValue= 0;
+			Gv_PrescalerTimer0_AbsoluteValue= 0;
 			break;
 			case  T0_PRESCALER_1 :
-			Gv_PrescallerTimer0_AbsoluteValue= 1;
+			Gv_PrescalerTimer0_AbsoluteValue= 1;
 			break;
 			case  T0_PRESCALER_8 :
-			Gv_PrescallerTimer0_AbsoluteValue= 8;
+			Gv_PrescalerTimer0_AbsoluteValue= 8;
 			break;
 			case  T0_PRESCALER_64 :
-			Gv_PrescallerTimer0_AbsoluteValue= 64;
+			Gv_PrescalerTimer0_AbsoluteValue= 64;
 			break;
 			case  T0_PRESCALER_256 :
-			Gv_PrescallerTimer0_AbsoluteValue= 256;
+			Gv_PrescalerTimer0_AbsoluteValue= 256;
 			break;
 			case  T0_PRESCALER_1024 :
-			Gv_PrescallerTimer0_AbsoluteValue= 1024;
+			Gv_PrescalerTimer0_AbsoluteValue= 1024;
 			break;
 		}
 }
@@ -380,7 +380,7 @@ uint8 Timers_timer0_Read(void)
  */
 void Timers_timer0_Start(void)
 {
-	TCCR0 |= Gv_PrescallerTimer0_Mask;
+	TCCR0 |= Gv_PrescalerTimer0_Mask;
 }
 
 
@@ -400,7 +400,7 @@ void Timers_timer0_Stop(void)
  */
 void Timers_timer0_Delay_ms(uint16 delay)
 {
-	volatile sint64 counter = ((sint64)delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
+	volatile sint64 counter = ((sint64)delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescalerTimer0_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
 	TCNT0 = 0;
 	Timers_timer0_Start();
 	while(counter--)
@@ -419,7 +419,7 @@ void Timers_timer0_Delay_ms(uint16 delay)
  */
 void Timers_timer0_Delay_ns(uint32 delay)
 {
-	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescallerTimer0_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER0_MAX_COUNT * Gv_PrescalerTimer0_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
 	Timers_timer0_Start();
 	while(counter--)
 	{
@@ -475,26 +475,26 @@ void Timers_timer1_Init(T1_MODE mode,T1_COM OC,T1_PRESCALER prescal, uint16 init
 	TCNT1L = initialValue;
 	Gpio_PinDirection(MYPORTD,BIT5,SET_OUT);
 	TIMSK |= interruptMask;
-	Gv_PrescallerTimer1_Mask = prescal;
+	Gv_PrescalerTimer1_Mask = prescal;
 	switch(prescal)
 	{
 		case  T1_NO_CLOCK :
-		Gv_PrescallerTimer1_AbsoluteValue= 0;
+		Gv_PrescalerTimer1_AbsoluteValue= 0;
 		break;
 		case  T1_PRESCALER_1 :
-		Gv_PrescallerTimer1_AbsoluteValue= 1;
+		Gv_PrescalerTimer1_AbsoluteValue= 1;
 		break;
 		case  T1_PRESCALER_8 :
-		Gv_PrescallerTimer1_AbsoluteValue= 8;
+		Gv_PrescalerTimer1_AbsoluteValue= 8;
 		break;
 		case  T1_PRESCALER_64 :
-		Gv_PrescallerTimer1_AbsoluteValue= 64;
+		Gv_PrescalerTimer1_AbsoluteValue= 64;
 		break;
 		case  T1_PRESCALER_256 :
-		Gv_PrescallerTimer1_AbsoluteValue= 256;
+		Gv_PrescalerTimer1_AbsoluteValue= 256;
 		break;
 		case  T1_PRESCALER_1024 :
-		Gv_PrescallerTimer1_AbsoluteValue= 1024;
+		Gv_PrescalerTimer1_AbsoluteValue= 1024;
 		break;
 	}
 		
@@ -542,7 +542,7 @@ uint8 Timers_timer1_ReadHighReg(void)
  */
 void Timers_timer1_Start(void)
 {
-	TCCR1B |= Gv_PrescallerTimer1_Mask;
+	TCCR1B |= Gv_PrescalerTimer1_Mask;
 }
 /**
 * Description: Stop the Timer/Counter by setting the the prescaller pins to 0
@@ -557,7 +557,7 @@ void Timers_timer1_Stop(void)
  */
 void Timers_timer1_Delay_ms(uint16 delay)
 {
-	volatile sint64 counter = (((sint64)delay) * Gv_F_CPU) / (TIMER1_MAX_COUNT * Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
+	volatile sint64 counter = (((sint64)delay) * Gv_F_CPU) / (TIMER1_MAX_COUNT * Gv_PrescalerTimer1_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR);
 	Timers_timer1_Start();
 	while(counter--)
 	{
@@ -573,7 +573,7 @@ void Timers_timer1_Delay_ms(uint16 delay)
  */
 void Timers_timer1_Delay_ns(uint32 delay)
 {
-	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER1_MAX_COUNT * Gv_PrescallerTimer1_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER1_MAX_COUNT * Gv_PrescalerTimer1_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
 	Timers_timer1_Start();
 	while(counter--)
 	{
@@ -621,32 +621,32 @@ void Timers_timer2_Init(T2_MODE mode,T2_COM OC0,T2_PRESCALER prescal, uint8 init
 	TCNT2 = initialValue;
 	OCR2  = outputCompare;
 	TIMSK |= interruptMask;
-	Gv_PrescallerTimer2_Mask = prescal;
+	Gv_PrescalerTimer2_Mask = prescal;
 		switch(prescal)
 		{
 			case T2_NO_CLOCK : 
-			Gv_PrescallerTimer2_AbsoluteValue= 0;
+			Gv_PrescalerTimer2_AbsoluteValue= 0;
 			break;	
 			case  T2_PRESCALER_1 :
-			Gv_PrescallerTimer2_AbsoluteValue= 1;
+			Gv_PrescalerTimer2_AbsoluteValue= 1;
 			break;
 			case  T2_PRESCALER_8 :
-			Gv_PrescallerTimer2_AbsoluteValue= 8;
+			Gv_PrescalerTimer2_AbsoluteValue= 8;
 			break;
 			case  T2_PRESCALER_32 :
-			Gv_PrescallerTimer2_AbsoluteValue= 32;
+			Gv_PrescalerTimer2_AbsoluteValue= 32;
 			break;
 			case  T2_PRESCALER_64 :
-			Gv_PrescallerTimer2_AbsoluteValue= 64;
+			Gv_PrescalerTimer2_AbsoluteValue= 64;
 			break;
 			case  T2_PRESCALER_128 :
-			Gv_PrescallerTimer2_AbsoluteValue= 128;
+			Gv_PrescalerTimer2_AbsoluteValue= 128;
 			break;
 			case  T2_PRESCALER_256 :
-			Gv_PrescallerTimer2_AbsoluteValue= 256;
+			Gv_PrescalerTimer2_AbsoluteValue= 256;
 			break;
 			case  T2_PRESCALER_1024 :
-			Gv_PrescallerTimer2_AbsoluteValue= 1024;
+			Gv_PrescalerTimer2_AbsoluteValue= 1024;
 			break;
 		}
 }
@@ -679,7 +679,7 @@ uint8 Timers_timer2_Read(void)
  */
 void Timers_timer2_Start(void)
 {
-		TCCR2 |= Gv_PrescallerTimer2_Mask;
+		TCCR2 |= Gv_PrescalerTimer2_Mask;
 }
 
 /**
@@ -696,7 +696,7 @@ void Timers_timer2_Stop(void)
  */
 void Timers_timer2_Delay_ms(uint16 delay)
 {
-	volatile sint64 counter = delay *(Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR));
+	volatile sint64 counter = delay *(Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescalerTimer2_AbsoluteValue * SECONDS_TO_MILLISECONSD_FACTOR));
 	Timers_timer2_Start();
 	while(counter--)
 	{
@@ -713,7 +713,7 @@ void Timers_timer2_Delay_ms(uint16 delay)
  */
 void Timers_timer2_Delay_ns(uint32 delay)
 {
-	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescallerTimer2_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
+	volatile sint64 counter = ((uint64) delay) * Gv_F_CPU / (TIMER2_MAX_COUNT * Gv_PrescalerTimer2_AbsoluteValue * SECONDS_TO_NANOSECONSD_FACTOR);
 	Timers_timer2_Start();
 	while(counter--)
 	{

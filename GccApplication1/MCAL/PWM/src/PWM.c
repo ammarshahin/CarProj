@@ -47,7 +47,7 @@ void PWM_Init( uint8 ch_no){
 void PWM_PhaseCorrect( uint8 dutycycle , uint16 freq){
 	uint16 TOP_Value;
 	uint16 Compare_Value;
-	TOP_Value = F_CPU / ( 2 * freq * Gv_PrescallerTimer1_AbsoluteValue);
+	TOP_Value = F_CPU / ( 2 * freq * Gv_PrescalerTimer1_AbsoluteValue);
 	Compare_Value = (TOP_Value*dutycycle)/DUTY_CYCLE_PERCENTAGE_FACTOR;
 	ICR1L  = (uint8)(TOP_Value);
 	ICR1H  = (uint8)(TOP_Value>>8);

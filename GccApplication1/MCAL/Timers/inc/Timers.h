@@ -189,14 +189,14 @@ typedef enum {
 /************************************************************************/
 
 /* Global variables for the absolute value of the prescaller */
-extern volatile uint16 Gv_PrescallerTimer0_AbsoluteValue;
-extern volatile uint16 Gv_PrescallerTimer1_AbsoluteValue;
-extern volatile uint16 Gv_PrescallerTimer2_AbsoluteValue;
+extern volatile uint16 Gv_PrescalerTimer0_AbsoluteValue;
+extern volatile uint16 Gv_PrescalerTimer1_AbsoluteValue;
+extern volatile uint16 Gv_PrescalerTimer2_AbsoluteValue;
 
 /* Global variables for the Mask value of the prescaler (values set as default) */
-extern volatile uint8 Gv_PrescallerTimer0_Mask;
-extern volatile uint8 Gv_PrescallerTimer1_Mask;
-extern volatile uint8 Gv_PrescallerTimer2_Mask;
+extern volatile uint8 Gv_PrescalerTimer0_Mask;
+extern volatile uint8 Gv_PrescalerTimer1_Mask;
+extern volatile uint8 Gv_PrescalerTimer2_Mask;
 
 /************************************************************************/
 /*                   Timers' Functions' prototypes                      */
@@ -257,7 +257,7 @@ uint32 Timers_Read(uint8 ch_no);
 /**
  * Function : Timers_timer0_Init
  * Description: this function is to initialize the Timer0 
- * @param control the control Reg value which include the mode and the Gv_PrescallerTimer0_AbsoluteValue
+ * @param control the control Reg value which include the mode and the Gv_PrescalerTimer0_AbsoluteValue
  * @param initialValue the initial value to be set in the TCNT0 Reg
  * @param outputCompare the value to be set in the OCR0 Reg 
  * @param interruptMask Enable or disable the interrupts of the Timer
